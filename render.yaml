@@ -1,0 +1,83 @@
+envVarGroups:
+  - name: dateapp-shared
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: config.settings.production
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: "False"
+      - key: ALLOWED_HOSTS
+        value: .onrender.com
+      - key: CSRF_TRUSTED_ORIGINS
+        value: https://dateapp.onrender.com
+      - key: DB_ENGINE
+        value: postgres
+      - key: DB_NAME
+        fromDatabase:
+          name: dateapp-db
+          property: database
+      - key: DB_USER
+        fromDatabase:
+          name: dateapp-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: dateapp-db
+          property: password
+      - key: DB_HOST
+        fromDatabase:
+          name: dateapp-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: dateapp-db
+          property: port
+      - key: REDIS_URL
+        fromService:
+          type: keyvalue
+          name: dateapp-redis
+          property: connectionString
+
+services:
+  - type: web
+    name: dateapp
+    runtime: docker
+    dockerfilePath: ./docker/Dockerfile
+    dockerContext: .
+    plan: starter
+    healthCheckPath: /health/
+    preDeployCommand: python manage.py migrate --noinput && python manage.py collectstatic --noinput
+    envVarGroups:
+      - dateapp-shared
+
+  - type: worker
+    name: dateapp-celery-worker
+    runtime: docker
+    dockerfilePath: ./docker/Dockerfile
+    dockerContext: .
+    dockerCommand: celery -A config worker -l info --concurrency=2
+    plan: starter
+    envVarGroups:
+      - dateapp-shared
+
+  - type: worker
+    name: dateapp-celery-beat
+    runtime: docker
+    dockerfilePath: ./docker/Dockerfile
+    dockerContext: .
+    dockerCommand: celery -A config beat -l info
+    plan: starter
+    envVarGroups:
+      - dateapp-shared
+
+  - type: keyvalue
+    name: dateapp-redis
+    plan: free
+    maxmemoryPolicy: allkeys-lru
+
+databases:
+  - name: dateapp-db
+    plan: free
+    databaseName: dateapp
+    user: dateapp
