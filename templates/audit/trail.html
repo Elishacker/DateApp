@@ -1,0 +1,50 @@
+{% extends "base/app.html" %}
+{% load icons %}
+{% block title %}Audit trail · {{ SITE.SITE_NAME }}{% endblock %}
+{% block app_content %}
+<header class="page-header">
+    <h1 class="page-title">Audit trail</h1>
+    <p class="page-subtitle">Append-only record of every consequential action.</p>
+</header>
+
+<form method="get" class="panel mb-2">
+    <div class="row">
+        <select class="form-select" name="category">
+            <option value="">All categories</option>
+            {% for category in categories %}
+                <option value="{{ category.value }}"
+                    {% if category.is_active %}selected{% endif %}>{{ category.label }}</option>
+            {% endfor %}
+        </select>
+        <input class="form-input" type="text" name="action" value="{{ action_filter }}"
+               placeholder="Filter by action">
+        <button type="submit" class="btn btn-primary btn-sm">Filter</button>
+    </div>
+</form>
+
+{% if has_entries %}
+    <div class="table-wrap">
+        <table class="table">
+            <thead><tr><th>When</th><th>Actor</th><th>Action</th>
+                       <th>Category</th><th>Object</th><th>IP</th></tr></thead>
+            <tbody>
+            {% for entry in entries %}
+                <tr>
+                    <td>{{ entry.created_at }}</td>
+                    <td>{{ entry.actor_label }}</td>
+                    <td>{{ entry.action }}</td>
+                    <td>{{ entry.category_label }}</td>
+                    <td>{{ entry.object_type }} {{ entry.object_id }}</td>
+                    <td>{{ entry.ip_address }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% else %}
+    <div class="empty">
+        <div class="empty-icon">{% icon "journal-text" size=34 %}</div>
+        <p class="empty-text">No entries match those filters.</p>
+    </div>
+{% endif %}
+{% endblock %}

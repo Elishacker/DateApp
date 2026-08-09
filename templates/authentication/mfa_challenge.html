@@ -1,0 +1,14 @@
+{% extends "base/auth.html" %}
+{% block title %}Two-factor authentication · {{ SITE.SITE_NAME }}{% endblock %}
+{% block auth_title %}One more step{% endblock %}
+{% block auth_subtitle %}Enter the code from your authenticator app.{% endblock %}
+{% block auth_content %}
+<form method="post" novalidate>
+    {% csrf_token %}
+    {% include "components/form.html" with form=form %}
+    <button type="submit" class="btn btn-primary btn-block btn-lg">Verify</button>
+</form>
+{% endblock %}
+{% block auth_footer %}
+Lost your device? Use one of your recovery codes above.
+{% endblock %}

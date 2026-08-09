@@ -1,0 +1,16 @@
+{% extends "base/auth.html" %}
+{% block title %}Confirm your email · {{ SITE.SITE_NAME }}{% endblock %}
+{% block auth_title %}Check your inbox{% endblock %}
+{% block auth_subtitle %}We sent you a confirmation link.{% endblock %}
+{% block auth_content %}
+<p class="small muted">Didn't get it? Check your spam folder, or send it again.</p>
+{% if user.is_authenticated %}
+<form method="post" action="{% url 'authentication:resend_verification' %}">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-ghost btn-block">Resend the email</button>
+</form>
+{% endif %}
+{% endblock %}
+{% block auth_footer %}
+<a href="{% url 'common:landing' %}">Back to home</a>
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends "base/app.html" %}
+{% load icons %}
+{% block title %}Waiting for payment · {{ SITE.SITE_NAME }}{% endblock %}
+{% block app_content %}
+<div class="panel center narrow centered" data-payment-poll="{{ poll_url }}">
+    <div class="empty-icon">{% icon "hourglass-split" size=34 %}</div>
+    <h1>Confirm on your phone</h1>
+    <p class="muted">We sent a prompt for {{ payment.amount_label }}. Enter your PIN to approve.</p>
+    <p class="small muted">Reference {{ payment.reference }}</p>
+    <p class="small muted" data-payment-status>Waiting for confirmation…</p>
+</div>
+{% endblock %}

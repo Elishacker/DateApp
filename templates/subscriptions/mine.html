@@ -1,0 +1,57 @@
+{% extends "base/app.html" %}
+{% block title %}My subscription · {{ SITE.SITE_NAME }}{% endblock %}
+{% block app_content %}
+<header class="page-header">
+    <h1 class="page-title">My subscription</h1>
+</header>
+
+<div class="panel mb-2">
+    <h2 class="panel-title">{{ summary.plan_name }}</h2>
+    <p class="muted">{{ summary.status_label }}</p>
+    {% if summary.days_remaining %}
+        <p>{{ summary.days_remaining }} days remaining</p>
+    {% endif %}
+    {% if summary.boosts_remaining %}
+        <p>{{ summary.boosts_remaining }} boosts left</p>
+        <form method="post" action="{% url 'subscriptions:boost' %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-accent btn-sm">Use a boost</button>
+        </form>
+    {% endif %}
+
+    <ul class="plan-features">
+        {% for feature in summary.features %}<li>{{ feature }}</li>{% endfor %}
+    </ul>
+
+    <div class="row">
+        <a class="btn btn-primary" href="{% url 'subscriptions:plans' %}">Change plan</a>
+        {% if summary.is_premium %}
+            <form method="post" action="{% url 'subscriptions:cancel' %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-ghost">Cancel plan</button>
+            </form>
+        {% endif %}
+    </div>
+</div>
+
+{% if invoices %}
+<div class="panel">
+    <h2 class="panel-title">Recent payments</h2>
+    <div class="table-wrap">
+        <table class="table">
+            <thead><tr><th>Reference</th><th>Amount</th><th>Status</th><th>Date</th></tr></thead>
+            <tbody>
+            {% for payment in invoices %}
+                <tr>
+                    <td>{{ payment.reference }}</td>
+                    <td>{{ payment.amount_label }}</td>
+                    <td>{{ payment.status_label }}</td>
+                    <td>{{ payment.created_at }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

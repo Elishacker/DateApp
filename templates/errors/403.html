@@ -1,0 +1,11 @@
+{% extends "base/base.html" %}
+{% load icons %}
+{% block title %}Not allowed · {{ SITE.SITE_NAME }}{% endblock %}
+{% block content %}
+<div class="panel center narrow centered">
+    <div class="empty-icon">{% icon "lock-fill" size=34 %}</div>
+    <h1>Not allowed</h1>
+    <p class="muted">You don't have permission to see this page.</p>
+    <a class="btn btn-primary" href="{% url 'common:landing' %}">Back to home</a>
+</div>
+{% endblock %}

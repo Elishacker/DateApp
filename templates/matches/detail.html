@@ -1,0 +1,46 @@
+{% extends "base/app.html" %}
+{% block title %}{{ person.display_name }} · {{ SITE.SITE_NAME }}{% endblock %}
+{% block app_content %}
+<div class="panel stack">
+    <div class="row">
+        <div class="list-avatar avatar-lg">
+            {% if person.avatar_url %}
+                <img src="{{ person.avatar_url }}" alt="{{ person.display_name }}">
+            {% else %}{{ person.display_name|first }}{% endif %}
+        </div>
+        <div>
+            <h1 class="mb-0">{{ person.display_name }}</h1>
+            <p class="muted">{{ compatibility_score }}% compatible · matched {{ matched_at }}</p>
+        </div>
+    </div>
+
+    {% if score_reasons %}
+        <div>
+            <h2 class="panel-title">Why you match</h2>
+            <ul class="chip-list">
+                {% for reason in score_reasons %}<li class="chip">{{ reason }}</li>{% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    {% if shared_interests %}
+        <div>
+            <h2 class="panel-title">Shared interests</h2>
+            <ul class="chip-list">
+                {% for interest in shared_interests %}<li class="chip">{{ interest }}</li>{% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    <div class="row">
+        <a class="btn btn-primary" href="{% url 'chat:conversation' conversation_id %}">Message</a>
+        <a class="btn btn-ghost" href="{% url 'profiles:public' person.id %}">View profile</a>
+        <a class="btn btn-ghost" href="{% url 'matching:explain' person.id %}">Full breakdown</a>
+    </div>
+
+    <form method="post" action="{% url 'matches:unmatch' match_id %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-ghost btn-sm">Unmatch</button>
+    </form>
+</div>
+{% endblock %}

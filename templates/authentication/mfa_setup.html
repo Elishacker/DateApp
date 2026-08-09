@@ -1,0 +1,24 @@
+{% extends "base/app.html" %}
+{% block title %}Set up two-factor authentication · {{ SITE.SITE_NAME }}{% endblock %}
+{% block app_content %}
+<div class="panel stack narrow-md">
+    <h1>Set up two-factor authentication</h1>
+    <p>Add {{ SITE.SITE_NAME }} to your authenticator app, then confirm with a code.</p>
+
+    <div class="stack">
+        <p class="form-label">1. Add this key to your app</p>
+        <code class="form-input">{{ secret }}</code>
+        {% if otpauth_url %}
+            <p class="small muted">Or open this link on the device with your app:</p>
+            <code class="form-input small">{{ otpauth_url }}</code>
+        {% endif %}
+    </div>
+
+    <form method="post" novalidate>
+        {% csrf_token %}
+        <p class="form-label">2. Enter the 6-digit code it shows</p>
+        {% include "components/form.html" with form=form %}
+        <button type="submit" class="btn btn-primary btn-block">Turn on 2FA</button>
+    </form>
+</div>
+{% endblock %}

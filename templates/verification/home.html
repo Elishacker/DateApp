@@ -1,0 +1,45 @@
+{% extends "base/app.html" %}
+{% load icons %}
+{% block title %}Verification · {{ SITE.SITE_NAME }}{% endblock %}
+{% block app_content %}
+<header class="page-header">
+    <h1 class="page-title">Verification</h1>
+    <p class="page-subtitle">{{ status.label }}</p>
+</header>
+
+<div class="panel mb-2">
+    <div class="meter">
+        <div class="progress">
+            <div class="progress-bar" data-progress="{{ status.percent }}"></div>
+        </div>
+        <span class="meter-value">{{ status.percent }}%</span>
+    </div>
+</div>
+
+<div class="list">
+    {% for step in status.steps %}
+        <div class="list-item">
+            <div class="list-avatar">{% if step.is_done %}{% icon "check-circle-fill" size=20 css_class="tone-ok" %}{% else %}{% icon "circle-fill" size=10 css_class="tone-muted" %}{% endif %}</div>
+            <div class="list-body">
+                <p class="list-title">{{ step.label }}</p>
+                <p class="list-sub">{{ step.blurb }}</p>
+            </div>
+            <div class="list-side">
+                {% if step.is_done %}
+                    <span class="chip chip-verified">Done</span>
+                {% elif step.is_pending %}
+                    <span class="chip">In review</span>
+                {% elif step.kind == "phone" %}
+                    <a class="btn btn-ghost btn-sm" href="{% url 'verification:phone' %}">Start</a>
+                {% elif step.kind == "selfie" %}
+                    <a class="btn btn-ghost btn-sm" href="{% url 'verification:selfie' %}">Start</a>
+                {% elif step.kind == "government_id" %}
+                    <a class="btn btn-ghost btn-sm" href="{% url 'verification:identity' %}">Start</a>
+                {% else %}
+                    <a class="btn btn-ghost btn-sm" href="{% url 'authentication:verify_email_notice' %}">Start</a>
+                {% endif %}
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

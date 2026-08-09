@@ -1,0 +1,16 @@
+{% extends "base/app.html" %}
+{% block title %}Enter your code · {{ SITE.SITE_NAME }}{% endblock %}
+{% block app_content %}
+<div class="panel stack narrow">
+    <h1>Enter your code</h1>
+    <form method="post" novalidate>
+        {% csrf_token %}
+        {% include "components/form.html" with form=form %}
+        <button type="submit" class="btn btn-primary btn-block">Verify</button>
+    </form>
+    <form method="post" action="{% url 'verification:phone_resend' %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-ghost btn-block btn-sm">Send a new code</button>
+    </form>
+</div>
+{% endblock %}

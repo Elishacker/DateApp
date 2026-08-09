@@ -1,0 +1,57 @@
+{% extends "base/app.html" %}
+{% load icons %}
+{% block title %}Matches · {{ SITE.SITE_NAME }}{% endblock %}
+{% block app_content %}
+<header class="page-header">
+    <h1 class="page-title">Matches</h1>
+    <p class="page-subtitle">{{ total }} connections</p>
+</header>
+
+{% if has_matches %}
+    {% if new_matches %}
+        <h2>New matches</h2>
+        <div class="grid grid-3 mb-3">
+            {% for row in new_matches %}
+                <a class="panel center" href="{% url 'matches:detail' row.match_id %}">
+                    <div class="list-avatar avatar-md avatar-stacked">
+                        {% if row.user.avatar_url %}
+                            <img src="{{ row.user.avatar_url }}" alt="{{ row.user.display_name }}">
+                        {% else %}{{ row.user.display_name|first }}{% endif %}
+                    </div>
+                    <p class="list-title">{{ row.user.display_name }}</p>
+                    <p class="small muted">{{ row.compatibility_score }}% match</p>
+                </a>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {% if conversations %}
+        <h2>Conversations</h2>
+        <div class="list">
+            {% for row in conversations %}
+                <a class="list-item{% if row.unread_count %} is-unread{% endif %}"
+                   href="{% url 'chat:conversation' row.conversation_id %}">
+                    <div class="list-avatar">
+                        {% if row.user.avatar_url %}
+                            <img src="{{ row.user.avatar_url }}" alt="{{ row.user.display_name }}">
+                        {% else %}{{ row.user.display_name|first }}{% endif %}
+                    </div>
+                    <div class="list-body">
+                        <p class="list-title">{{ row.user.display_name }}</p>
+                        <p class="list-sub">{{ row.last_message }}</p>
+                    </div>
+                    <div class="list-side">
+                        {% if row.unread_count %}<span class="badge">{{ row.unread_count }}</span>{% endif %}
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% else %}
+    <div class="empty">
+        <div class="empty-icon">{% icon "chat-heart-fill" size=34 %}</div>
+        <p class="empty-text">{{ empty_message }}</p>
+        <a class="btn btn-primary" href="{% url 'discovery:feed' %}">Start swiping</a>
+    </div>
+{% endif %}
+{% endblock %}

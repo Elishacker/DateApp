@@ -1,0 +1,78 @@
+{% extends "base/app.html" %}
+{% load icons %}
+{% block title %}Notifications · {{ SITE.SITE_NAME }}{% endblock %}
+{% block app_content %}
+<header class="page-header">
+    <h1 class="page-title">Notifications</h1>
+    {% if unread_count %}<p class="page-subtitle">{{ unread_count }} unread</p>{% endif %}
+</header>
+
+<nav class="tabs">
+    {% for item in filters %}
+        <a class="tab{% if item.is_active %} is-active{% endif %}"
+           href="?filter={{ item.key }}">{{ item.label }}</a>
+    {% endfor %}
+</nav>
+
+{% if has_notifications %}
+    <div class="row mb-2">
+        <form method="post" action="{% url 'notifications:mark_all_read' %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-ghost btn-sm">Mark all as read</button>
+        </form>
+        <form method="post" action="{% url 'notifications:clear' %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-ghost btn-sm">Clear all</button>
+        </form>
+    </div>
+
+    <p class="small muted swipe-hint">
+        {% icon "arrow-right" size=13 css_class="icon-flip" %}
+        Swipe a notification left to delete it.
+    </p>
+
+    {% comment %}
+    Each row is a surface sitting over its own delete action. Touch slides the
+    surface aside; pointer devices reveal the same action on hover or keyboard
+    focus, so the gesture is never the only way to reach it. The action is a
+    real POST form, so it still works with JavaScript off.
+    {% endcomment %}
+    <div class="list" data-swipe-list>
+        {% for item in notifications %}
+            <div class="swipe" data-swipe-item>
+                <form class="swipe-action" method="post"
+                      action="{% url 'notifications:delete' item.id %}" data-swipe-delete>
+                    {% csrf_token %}
+                    <button type="submit" class="swipe-delete"
+                            aria-label="Delete notification: {{ item.title }}">
+                        {% icon "trash3" size=17 %}<span>Delete</span>
+                    </button>
+                </form>
+
+                <a class="list-item swipe-surface{% if not item.is_read %} is-unread{% endif %}"
+                   href="{{ item.action_url }}">
+                    <div class="list-avatar">
+                        {% if item.actor_avatar_url %}
+                            <img src="{{ item.actor_avatar_url }}" alt="{{ item.actor_name }}">
+                        {% else %}{% icon item.icon size=20 %}{% endif %}
+                    </div>
+                    <div class="list-body">
+                        <p class="list-title">{{ item.title }}</p>
+                        <p class="list-sub">{{ item.body }}</p>
+                    </div>
+                    <div class="list-side">{{ item.time_label }}</div>
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="empty">
+        <div class="empty-icon">{% icon "bell-fill" size=34 %}</div>
+        <p class="empty-text">{{ empty_message }}</p>
+    </div>
+{% endif %}
+
+{% if footnote %}
+    <p class="small muted mt-3">{% icon "info-circle-fill" size=13 %} {{ footnote }}</p>
+{% endif %}
+{% endblock %}

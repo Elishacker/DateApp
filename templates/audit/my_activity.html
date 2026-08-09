@@ -1,0 +1,32 @@
+{% extends "base/app.html" %}
+{% load icons %}
+{% block title %}My activity · {{ SITE.SITE_NAME }}{% endblock %}
+{% block app_content %}
+<header class="page-header">
+    <h1 class="page-title">Your activity</h1>
+    <p class="page-subtitle">Everything recorded against your account.</p>
+</header>
+
+{% if has_entries %}
+    <div class="table-wrap">
+        <table class="table">
+            <thead><tr><th>When</th><th>Action</th><th>Category</th><th>IP</th></tr></thead>
+            <tbody>
+            {% for entry in entries %}
+                <tr>
+                    <td>{{ entry.created_at }}</td>
+                    <td>{{ entry.description }}</td>
+                    <td>{{ entry.category_label }}</td>
+                    <td>{{ entry.ip_address }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% else %}
+    <div class="empty">
+        <div class="empty-icon">{% icon "journal-text" size=34 %}</div>
+        <p class="empty-text">No activity recorded yet.</p>
+    </div>
+{% endif %}
+{% endblock %}

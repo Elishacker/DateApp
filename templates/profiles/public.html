@@ -1,0 +1,72 @@
+{% extends "base/app.html" %}
+{% load icons %}
+{% block title %}{{ person.display_name }} · {{ SITE.SITE_NAME }}{% endblock %}
+{% block app_content %}
+<div class="panel stack">
+    <div class="row">
+        <div class="list-avatar avatar-lg">
+            {% if person.avatar_url %}
+                <img src="{{ person.avatar_url }}" alt="{{ person.display_name }}">
+            {% else %}{{ person.display_name|first }}{% endif %}
+        </div>
+        <div>
+            <h1 class="mb-0">{{ person.display_name }}{% if person.age %}, {{ person.age }}{% endif %}</h1>
+            <p class="muted mb-0">{{ card.location_label }}</p>
+            {% if person.is_verified %}<span class="chip chip-verified">Verified</span>{% endif %}
+            {% if person.is_online %}<span class="chip chip-online">Online</span>{% endif %}
+        </div>
+    </div>
+
+    {% if received.total %}
+        <p class="card-likes">
+            <span class="card-likes-part">
+                {% icon "heart-fill" size=14 %}<span>{{ received.likes }} like{{ received.likes|pluralize }}</span>
+            </span>
+            {% if received.super_likes %}
+                <span class="card-likes-part is-super">
+                    {% icon "star-fill" size=14 %}<span>{{ received.super_likes }} super like{{ received.super_likes|pluralize }}</span>
+                </span>
+            {% endif %}
+        </p>
+    {% endif %}
+
+    {% if compatibility %}
+        <p class="list-title">{{ compatibility }}% compatible
+            <a class="small" href="{% url 'matching:explain' person.id %}">see why</a>
+        </p>
+    {% endif %}
+    {% if distance_km %}<p class="muted">{{ distance_km }} km away</p>{% endif %}
+
+    {% if card.headline %}<h2>{{ card.headline }}</h2>{% endif %}
+    {% if card.bio %}<p>{{ card.bio }}</p>{% endif %}
+    {% if card.job_title %}<p class="muted">{{ card.job_title }}</p>{% endif %}
+    {% if card.school %}<p class="muted">{{ card.school }}</p>{% endif %}
+
+    {% if card.photos %}
+        <div class="grid grid-3">
+            {% for url in card.photos %}
+                <img class="tile-photo" src="{{ url }}" alt="{{ person.display_name }}">
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {% if card.interests %}
+        <ul class="chip-list">
+            {% for interest in card.interests %}<li class="chip">{{ interest }}</li>{% endfor %}
+        </ul>
+    {% endif %}
+
+    <div class="row">
+        <a class="btn btn-primary" href="{% url 'chat:with' person.id %}">Message</a>
+        {% if not has_liked %}
+            <button type="button" class="btn btn-ghost" data-swipe="like"
+                    data-user-id="{{ person.id }}">Like</button>
+        {% else %}
+            <span class="chip">You liked them</span>
+        {% endif %}
+        {% if is_match %}<span class="chip chip-match">Matched</span>{% endif %}
+        <a class="btn btn-ghost" href="{% url 'reports:report_user' person.id %}">Report</a>
+        <button type="button" class="btn btn-ghost" data-block="{{ person.id }}">Block</button>
+    </div>
+</div>
+{% endblock %}

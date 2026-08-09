@@ -1,0 +1,84 @@
+{% extends "base/app.html" %}
+{% load static %}
+{% block title %}Analytics · {{ SITE.SITE_NAME }}{% endblock %}
+
+{% block app_content %}
+<header class="page-header">
+    <h1 class="page-title">Analytics</h1>
+    <p class="page-subtitle">Generated {{ generated_at }}</p>
+</header>
+
+<nav class="tabs">
+    {% for option in range_options %}
+        <a class="tab{% if option.is_active %} is-active{% endif %}"
+           href="?days={{ option.value }}">{{ option.label }}</a>
+    {% endfor %}
+</nav>
+
+<div class="grid grid-3 mb-3">
+    {% for tile in tiles %}
+        <div class="tile">
+            <p class="tile-label">{{ tile.label }}</p>
+            <p class="tile-value">{{ tile.value }}</p>
+            <p class="tile-sub">{{ tile.sub }}</p>
+        </div>
+    {% endfor %}
+</div>
+
+<div class="grid grid-2 mb-3" data-charts="{{ chart_data_json }}">
+    <div class="chart-card">
+        <h2 class="panel-title">Matches</h2>
+        <div class="chart" data-chart="matches"></div>
+    </div>
+    <div class="chart-card">
+        <h2 class="panel-title">Messages</h2>
+        <div class="chart" data-chart="messages"></div>
+    </div>
+    <div class="chart-card">
+        <h2 class="panel-title">Revenue</h2>
+        <div class="chart" data-chart="revenue"></div>
+    </div>
+    <div class="chart-card">
+        <h2 class="panel-title">Likes</h2>
+        <div class="chart" data-chart="likes"></div>
+    </div>
+</div>
+
+{% if funnel %}
+<div class="panel mb-3">
+    <h2 class="panel-title">Conversion funnel</h2>
+    {% for step in funnel %}
+        <div class="mb-2">
+            <div class="row-between">
+                <span>{{ step.label }}</span>
+                <span class="meter-value">{{ step.count }} ({{ step.percent_of_total }}%)</span>
+            </div>
+            <div class="progress">
+                <div class="progress-bar" data-progress="{{ step.percent_of_total }}"></div>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<div class="grid grid-2">
+    <div class="panel">
+        <h2 class="panel-title">Trust and safety</h2>
+        <p>Open reports: {{ safety.open_reports }}</p>
+        <p>Moderation pending: {{ safety.moderation_queue.pending }}</p>
+        <p>Verification pending: {{ safety.verification_queue.pending }}</p>
+        <p>Security events open: {{ safety.security.open_events }}</p>
+    </div>
+    <div class="panel">
+        <h2 class="panel-title">Revenue</h2>
+        <p>Gross: {{ revenue.gross }}</p>
+        <p>Fees: {{ revenue.fees }}</p>
+        <p>Net: {{ revenue.net }}</p>
+        <p>Transactions: {{ revenue.transactions }}</p>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/charts.js' %}" defer></script>
+{% endblock %}

@@ -1,0 +1,78 @@
+{% extends "base/app.html" %}
+{% load icons %}
+{% block title %}Search · {{ SITE.SITE_NAME }}{% endblock %}
+
+{% block app_content %}
+<header class="page-header">
+    <h1 class="page-title">{{ headline }}</h1>
+    <p class="page-subtitle">Find anyone by name, region, country, job title or interests.</p>
+</header>
+
+<form method="get" class="search-form" role="search">
+    <div class="search-field">
+        {% icon "search" size=16 %}
+        <input class="form-input" type="search" name="q" value="{{ query }}"
+               placeholder="Try a name, “Arusha”, “Kenya”, “Nurse” or “Hiking”"
+               autocomplete="off" autofocus>
+        <button type="submit" class="btn btn-primary btn-sm">Search</button>
+    </div>
+
+    <div class="search-scopes">
+        {% for item in scopes %}
+            <label class="scope-chip{% if item.is_active %} is-active{% endif %}">
+                <input type="radio" name="scope" value="{{ item.key }}"
+                       {% if item.is_active %}checked{% endif %} hidden>
+                <span>{{ item.label }}</span>
+            </label>
+        {% endfor %}
+    </div>
+
+    <label class="search-strict">
+        <input type="checkbox" name="strict" value="1" class="form-check"
+               {% if strict %}checked{% endif %}>
+        <span>Only show people who match my preferences</span>
+    </label>
+</form>
+
+{% if has_searched %}
+    {% if results %}
+        <div class="grid grid-cards" data-feed>
+            {% for card in results %}
+                {% include "components/profile_card.html" with card=card %}
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty">
+            <div class="empty-icon">{% icon "search" size=34 %}</div>
+            <p class="empty-text">{{ message }}</p>
+            {% if strict %}
+                <p class="small muted">Your preference filter is on — try turning it off.</p>
+            {% endif %}
+        </div>
+    {% endif %}
+{% else %}
+    <div class="search-hints">
+        {% if facets.countries %}
+            <div class="search-hint-group">
+                <p class="form-label">Countries on Zynora</p>
+                <ul class="chip-list">
+                    {% for country in facets.countries %}
+                        <li><a class="chip" href="?q={{ country|urlencode }}&scope=country">{{ country }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+
+        {% if facets.regions %}
+            <div class="search-hint-group">
+                <p class="form-label">Regions</p>
+                <ul class="chip-list">
+                    {% for region in facets.regions %}
+                        <li><a class="chip" href="?q={{ region|urlencode }}&scope=region">{{ region }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+    </div>
+{% endif %}
+{% endblock %}

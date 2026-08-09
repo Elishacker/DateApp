@@ -1,0 +1,11 @@
+-r base.txt
+
+# Testing
+pytest>=8.3
+pytest-django>=4.9
+pytest-cov>=5.0
+factory-boy>=3.3
+
+# Quality
+ruff>=0.6
+django-debug-toolbar>=4.4

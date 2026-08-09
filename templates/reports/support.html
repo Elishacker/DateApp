@@ -1,0 +1,39 @@
+{% extends "base/app.html" %}
+{% block title %}Support · {{ SITE.SITE_NAME }}{% endblock %}
+{% block app_content %}
+<header class="page-header">
+    <h1 class="page-title">Support</h1>
+</header>
+
+<div class="panel mb-2">
+    <h2 class="panel-title">Open a ticket</h2>
+    <form method="post" novalidate>
+        {% csrf_token %}
+        {% include "components/form.html" with form=form %}
+        <button type="submit" class="btn btn-primary">Send</button>
+    </form>
+</div>
+
+{% if has_tickets %}
+<div class="panel">
+    <h2 class="panel-title">Your tickets</h2>
+    <div class="table-wrap">
+        <table class="table">
+            <thead><tr><th>Number</th><th>Subject</th><th>Topic</th>
+                       <th>Status</th><th>Opened</th></tr></thead>
+            <tbody>
+            {% for ticket in tickets %}
+                <tr>
+                    <td>{{ ticket.number }}</td>
+                    <td>{{ ticket.subject }}</td>
+                    <td>{{ ticket.category_label }}</td>
+                    <td>{{ ticket.status_label }}</td>
+                    <td>{{ ticket.created_at }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

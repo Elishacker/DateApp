@@ -1,0 +1,25 @@
+{% extends "base/app.html" %}
+{% block title %}Recovery codes · {{ SITE.SITE_NAME }}{% endblock %}
+{% block app_content %}
+<div class="panel stack narrow-md">
+    <h1>Save your recovery codes</h1>
+    <p>Each code works once. Store them somewhere safe — this is the only time
+       they are shown.</p>
+
+    {% if codes %}
+        <div class="table-wrap">
+            <table class="table">
+                <tbody>
+                {% for code in codes %}
+                    <tr><td><code>{{ code }}</code></td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <p class="muted">No codes to show. Generate new ones from your security page.</p>
+    {% endif %}
+
+    <a class="btn btn-primary" href="{% url 'security:my_security' %}">Done</a>
+</div>
+{% endblock %}

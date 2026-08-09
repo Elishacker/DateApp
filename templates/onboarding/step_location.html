@@ -1,0 +1,32 @@
+{% extends "base/base.html" %}
+{% block title %}{{ title }} · {{ SITE.SITE_NAME }}{% endblock %}
+{% block content %}
+<div class="wizard">
+    <div class="wizard-steps">
+        {% for step in steps %}
+            <div class="wizard-step{% if step.is_done %} is-done{% elif step.is_current %} is-current{% endif %}"></div>
+        {% endfor %}
+    </div>
+
+    <div class="panel stack">
+        <p class="small muted">Step {{ step_number }} of {{ total_steps }} · {{ percent_complete }}% complete</p>
+        <h1>{{ title }}</h1>
+        <p class="muted">{{ subtitle }}</p>
+
+        <form method="post" novalidate>
+            {% csrf_token %}
+            {% include "components/form.html" with form=form %}
+            <button type="button" class="btn btn-ghost btn-block" data-locate>Use my location</button>
+            <button type="submit" class="btn btn-primary btn-block mt-1">Finish</button>
+        </form>
+
+        {% if skippable %}
+            <form method="post" action="{% url 'onboarding:skip' %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-ghost btn-block btn-sm">Skip for now</button>
+            </form>
+        {% endif %}
+
+    </div>
+</div>
+{% endblock %}

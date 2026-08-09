@@ -1,0 +1,44 @@
+{% extends "base/app.html" %}
+{% block title %}Settings · {{ SITE.SITE_NAME }}{% endblock %}
+{% block app_content %}
+<header class="page-header">
+    <h1 class="page-title">Account settings</h1>
+</header>
+
+<div class="grid grid-2">
+    <a class="panel" href="{% url 'accounts:details' %}">
+        <h2 class="panel-title">Your details</h2>
+        <p class="muted mb-0">Name, username, phone number</p>
+    </a>
+    <a class="panel" href="{% url 'accounts:settings' %}">
+        <h2 class="panel-title">Preferences</h2>
+        <p class="muted mb-0">Notifications, privacy, language</p>
+    </a>
+    <a class="panel" href="{% url 'accounts:devices' %}">
+        <h2 class="panel-title">Devices</h2>
+        <p class="muted mb-0">{{ devices|length }} signed in</p>
+    </a>
+    <a class="panel" href="{% url 'authentication:password_change' %}">
+        <h2 class="panel-title">Password</h2>
+        <p class="muted mb-0">Change your password</p>
+    </a>
+    <a class="panel" href="{% url 'security:my_security' %}">
+        <h2 class="panel-title">Security</h2>
+        <p class="muted mb-0">2FA, sign-in history, alerts</p>
+    </a>
+    <a class="panel" href="{% url 'reports:blocked' %}">
+        <h2 class="panel-title">Blocked members</h2>
+        <p class="muted mb-0">Manage who can't contact you</p>
+    </a>
+</div>
+
+<div class="panel mt-2">
+    <h2 class="panel-title">Deactivate account</h2>
+    <p class="muted">Your profile is hidden until you sign in again. Nothing is deleted.</p>
+    <form method="post" action="{% url 'accounts:deactivate' %}">
+        {% csrf_token %}
+        <input class="form-input mb-1" type="text" name="reason" placeholder="Reason (optional)">
+        <button type="submit" class="btn btn-ghost">Deactivate</button>
+    </form>
+</div>
+{% endblock %}

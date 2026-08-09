@@ -1,0 +1,11 @@
+{{ title }}
+
+Hi {{ name }},
+
+{{ body }}
+
+{% if action_url %}{{ action_url }}{% endif %}
+
+--
+{{ site.SITE_NAME }}
+{{ site.SUPPORT_EMAIL }}

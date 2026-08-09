@@ -1,0 +1,11 @@
+{% extends "base/app.html" %}
+{% load icons %}
+{% block title %}Payment cancelled · {{ SITE.SITE_NAME }}{% endblock %}
+{% block app_content %}
+<div class="panel center narrow centered">
+    <div class="empty-icon">{% icon "arrow-counterclockwise" size=34 %}</div>
+    <h1>Payment cancelled</h1>
+    <p class="muted">Nothing was charged.</p>
+    <a class="btn btn-primary" href="{% url 'subscriptions:plans' %}">Back to plans</a>
+</div>
+{% endblock %}

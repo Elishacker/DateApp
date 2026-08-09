@@ -1,0 +1,13 @@
+{% extends "base/app.html" %}
+{% block title %}Verify your phone · {{ SITE.SITE_NAME }}{% endblock %}
+{% block app_content %}
+<div class="panel stack narrow">
+    <h1>Verify your phone</h1>
+    <p class="muted">We'll text you a six-digit code.</p>
+    <form method="post" novalidate>
+        {% csrf_token %}
+        {% include "components/form.html" with form=form %}
+        <button type="submit" class="btn btn-primary btn-block">Send code</button>
+    </form>
+</div>
+{% endblock %}

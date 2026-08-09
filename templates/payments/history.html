@@ -1,0 +1,59 @@
+{% extends "base/app.html" %}
+{% load icons %}
+{% block title %}Payment history · {{ SITE.SITE_NAME }}{% endblock %}
+{% block app_content %}
+<header class="page-header">
+    <h1 class="page-title">Payments</h1>
+</header>
+
+{% if has_payments %}
+    <div class="panel mb-2">
+        <h2 class="panel-title">Transactions</h2>
+        <div class="table-wrap">
+            <table class="table">
+                <thead><tr><th>Reference</th><th>For</th><th>Method</th>
+                           <th>Amount</th><th>Status</th><th>Date</th></tr></thead>
+                <tbody>
+                {% for payment in payments %}
+                    <tr>
+                        <td>{{ payment.reference }}</td>
+                        <td>{{ payment.purpose_label }}</td>
+                        <td>{{ payment.provider_label }}</td>
+                        <td>{{ payment.amount_label }}</td>
+                        <td>{{ payment.status_label }}</td>
+                        <td>{{ payment.created_at }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    {% if invoices %}
+    <div class="panel">
+        <h2 class="panel-title">Invoices</h2>
+        <div class="table-wrap">
+            <table class="table">
+                <thead><tr><th>Number</th><th>Description</th><th>Total</th><th>Issued</th></tr></thead>
+                <tbody>
+                {% for invoice in invoices %}
+                    <tr>
+                        <td>{{ invoice.number }}</td>
+                        <td>{{ invoice.description }}</td>
+                        <td>{{ invoice.total_label }}</td>
+                        <td>{{ invoice.issued_at }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+{% else %}
+    <div class="empty">
+        <div class="empty-icon">{% icon "receipt" size=34 %}</div>
+        <p class="empty-text">No payments yet.</p>
+        <a class="btn btn-primary" href="{% url 'subscriptions:plans' %}">See plans</a>
+    </div>
+{% endif %}
+{% endblock %}

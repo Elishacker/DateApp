@@ -1,0 +1,24 @@
+{% extends "base/app.html" %}
+{% load static %}
+{% block title %}{{ metric_label }} · {{ SITE.SITE_NAME }}{% endblock %}
+
+{% block app_content %}
+<header class="page-header">
+    <h1 class="page-title">{{ metric_label }}</h1>
+    <p class="page-subtitle">Last {{ days }} days</p>
+</header>
+
+<div class="grid grid-3 mb-2">
+    <div class="tile"><p class="tile-label">Total</p><p class="tile-value">{{ total }}</p></div>
+    <div class="tile"><p class="tile-label">Daily average</p><p class="tile-value">{{ average }}</p></div>
+    <div class="tile"><p class="tile-label">Peak</p><p class="tile-value">{{ peak }}</p></div>
+</div>
+
+<div class="chart-card">
+    <div class="chart" data-series="{{ series_json }}"></div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/charts.js' %}" defer></script>
+{% endblock %}

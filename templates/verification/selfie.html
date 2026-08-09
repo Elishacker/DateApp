@@ -1,0 +1,17 @@
+{% extends "base/app.html" %}
+{% block title %}Photo verification · {{ SITE.SITE_NAME }}{% endblock %}
+{% block app_content %}
+<div class="panel stack narrow-md">
+    <h1>Photo verification</h1>
+    <p>Take a photo of yourself right now, in this pose:</p>
+    <p class="list-title">{{ pose }}</p>
+    <p class="small muted">Reproducing the pose is what proves the photo is live —
+       a saved picture won't pass.</p>
+
+    <form method="post" enctype="multipart/form-data" novalidate>
+        {% csrf_token %}
+        {% include "components/form.html" with form=form %}
+        <button type="submit" class="btn btn-primary btn-block">Submit for review</button>
+    </form>
+</div>
+{% endblock %}

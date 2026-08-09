@@ -1,0 +1,80 @@
+{% extends "base/app.html" %}
+{% load icons %}
+{% block title %}Security · {{ SITE.SITE_NAME }}{% endblock %}
+{% block app_content %}
+<header class="page-header">
+    <h1 class="page-title">Your security</h1>
+</header>
+
+<div class="panel mb-2">
+    <h2 class="panel-title">Security checklist</h2>
+    <div class="list">
+        {% for item in checklist %}
+            <a class="list-item" href="{{ item.url }}">
+                <div class="list-avatar">{% if item.done %}{% icon "check-circle-fill" size=20 css_class="tone-ok" %}{% else %}{% icon "circle-fill" size=10 css_class="tone-muted" %}{% endif %}</div>
+                <div class="list-body"><p class="list-title">{{ item.label }}</p></div>
+            </a>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="grid grid-2 mb-2">
+    <div class="panel">
+        <h2 class="panel-title">Two-factor authentication</h2>
+        {% if mfa.confirmed %}
+            <p class="tone-ok">Enabled</p>
+            <p class="small muted">{{ mfa.recovery_codes_remaining }} recovery codes left</p>
+        {% else %}
+            <p class="muted">Not enabled.</p>
+            <a class="btn btn-primary btn-sm" href="{% url 'authentication:mfa_setup' %}">Turn on</a>
+        {% endif %}
+    </div>
+
+    <div class="panel">
+        <h2 class="panel-title">Active sessions</h2>
+        <p class="tile-value">{{ sessions|length }}</p>
+        <a class="btn btn-ghost btn-sm" href="{% url 'accounts:devices' %}">Manage devices</a>
+    </div>
+</div>
+
+{% if has_events %}
+<div class="panel mb-2">
+    <h2 class="panel-title">Security alerts</h2>
+    <div class="table-wrap">
+        <table class="table">
+            <thead><tr><th>When</th><th>Event</th><th>Severity</th><th>IP</th></tr></thead>
+            <tbody>
+            {% for event in events %}
+                <tr>
+                    <td>{{ event.created_at }}</td>
+                    <td>{{ event.description }}</td>
+                    <td class="tone-{{ event.tone }}">{{ event.severity }}</td>
+                    <td>{{ event.ip_address }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+
+<div class="panel">
+    <h2 class="panel-title">Recent sign-ins</h2>
+    <div class="table-wrap">
+        <table class="table">
+            <thead><tr><th>When</th><th>Outcome</th><th>IP</th></tr></thead>
+            <tbody>
+            {% for attempt in attempts %}
+                <tr>
+                    <td>{{ attempt.created_at }}</td>
+                    <td>{% if attempt.was_successful %}
+                            <span class="tone-ok">Success</span>
+                        {% else %}<span class="tone-danger">{{ attempt.outcome }}</span>{% endif %}</td>
+                    <td>{{ attempt.ip_address }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

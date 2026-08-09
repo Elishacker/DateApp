@@ -1,0 +1,41 @@
+{% extends "base/app.html" %}
+{% block title %}Trust scores · {{ SITE.SITE_NAME }}{% endblock %}
+{% block app_content %}
+<header class="page-header">
+    <h1 class="page-title">Trust scores</h1>
+    <p class="page-subtitle">Lowest first.</p>
+</header>
+
+<div class="table-wrap">
+    <table class="table">
+        <thead><tr><th>Member</th><th>Score</th><th>Band</th><th>Reports</th>
+                   <th>Rejected</th><th>Shadow ban</th><th></th></tr></thead>
+        <tbody>
+        {% for row in rows %}
+            <tr>
+                <td>{{ row.user.display_name }}</td>
+                <td>{{ row.score }}</td>
+                <td>{{ row.band }}</td>
+                <td>{{ row.reports_received }}</td>
+                <td>{{ row.content_rejected }}</td>
+                <td>{% if row.is_shadow_banned %}
+                        <span class="tone-danger">Yes</span>
+                    {% else %}No{% endif %}</td>
+                <td>
+                    <form method="post" action="{% url 'moderation:shadow_ban' row.user.id %}">
+                        {% csrf_token %}
+                        {% if row.is_shadow_banned %}
+                            <input type="hidden" name="banned" value="false">
+                            <button type="submit" class="btn btn-ghost btn-sm">Lift</button>
+                        {% else %}
+                            <input type="hidden" name="banned" value="true">
+                            <button type="submit" class="btn btn-ghost btn-sm">Shadow ban</button>
+                        {% endif %}
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

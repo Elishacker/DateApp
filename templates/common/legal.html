@@ -1,0 +1,41 @@
+{% extends "base/base.html" %}
+{% block title %}{{ title }} · {{ SITE.SITE_NAME }}{% endblock %}
+{% block content %}
+<div class="panel stack narrow-lg centered">
+    <h1>{{ title }}</h1>
+    {% if document == "terms" %}
+        <p>By using {{ SITE.SITE_NAME }} you agree to these terms.</p>
+        <h2>Eligibility</h2>
+        <p>You must be at least 18 years old. Accounts found to belong to minors
+           are removed immediately and permanently.</p>
+        <h2>Your conduct</h2>
+        <p>No harassment, hate speech, impersonation, solicitation or commercial
+           activity. Do not request money from other members.</p>
+        <h2>Your content</h2>
+        <p>You keep ownership of what you upload and grant us a licence to display
+           it within the service. Content may be screened automatically.</p>
+        <h2>Subscriptions</h2>
+        <p>Paid plans renew automatically unless cancelled. Cancelling keeps your
+           features until the end of the paid term.</p>
+        <h2>Termination</h2>
+        <p>We may suspend or close accounts that breach these terms or put other
+           members at risk.</p>
+    {% else %}
+        <p>This policy explains what we collect and why.</p>
+        <h2>What we collect</h2>
+        <p>Account details, profile information you choose to share, approximate
+           location, device and connection metadata, and usage activity.</p>
+        <h2>Location</h2>
+        <p>Coordinates are rounded before storage. Other members only ever see your
+           city and an approximate distance — never your exact position.</p>
+        <h2>Verification documents</h2>
+        <p>Identity documents are stored privately, used only to reach a decision,
+           and deleted once that decision is made.</p>
+        <h2>Your rights</h2>
+        <p>You can export your data, correct it, or delete your account at any time.
+           Deletion runs after a 30-day grace period.</p>
+        <h2>Contact</h2>
+        <p><a href="mailto:{{ SITE.SUPPORT_EMAIL }}">{{ SITE.SUPPORT_EMAIL }}</a></p>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends "base/base.html" %}
+{% block title %}About · {{ SITE.SITE_NAME }}{% endblock %}
+{% block content %}
+<div class="panel stack narrow-lg centered">
+    <h1>About {{ SITE.SITE_NAME }}</h1>
+    <p>{{ SITE.TAGLINE }}</p>
+    <p>Zynora is a dating platform built around three ideas: compatibility should
+       mean something, people should be who they say they are, and safety should
+       not be an afterthought.</p>
+    <h2>How matching works</h2>
+    <p>Every suggestion is scored across six dimensions — distance, age, shared
+       interests, lifestyle, relationship goals and activity. You can see exactly
+       why any two profiles scored the way they did.</p>
+    <h2>How we keep it safe</h2>
+    <p>Photo and ID verification, automated content screening, device tracking,
+       login anomaly detection and a full audit trail on every sensitive action.</p>
+    <a class="btn btn-primary" href="{% url 'authentication:register' %}">Join Zynora</a>
+</div>
+{% endblock %}

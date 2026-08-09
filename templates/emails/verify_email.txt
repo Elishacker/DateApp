@@ -1,0 +1,12 @@
+Confirm your email address
+
+Hi {{ name }},
+
+Welcome to {{ site.SITE_NAME }}. Confirm your email address to activate your account:
+
+/auth/verify-email/{{ token }}/
+
+If you didn't create this account, you can ignore this message.
+
+--
+{{ site.SITE_NAME }}

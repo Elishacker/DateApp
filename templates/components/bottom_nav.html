@@ -1,0 +1,51 @@
+{% load icons %}
+{% comment %}
+Mobile bottom bar. Hidden entirely above the mobile breakpoint, so the desktop
+layout is untouched. Four destinations only — the ones people return to — with
+everything else reachable from the drawer.
+
+is-active comes from nav_is, computed in apps.common.context_processors.
+{% endcomment %}
+<nav class="bottom-nav" aria-label="Primary">
+    <a class="bottom-nav-item{% if nav_is.discover %} is-active{% endif %}"
+       href="{% url 'discovery:feed' %}">
+        <span class="bottom-nav-icon">{% icon "fire" size=20 %}</span>
+        <span class="bottom-nav-label">Discover</span>
+    </a>
+
+    <a class="bottom-nav-item{% if nav_is.matches %} is-active{% endif %}"
+       href="{% url 'matches:list' %}">
+        <span class="bottom-nav-icon">{% icon "chat-heart-fill" size=20 %}</span>
+        <span class="bottom-nav-label">Matches</span>
+    </a>
+
+    <a class="bottom-nav-item{% if nav_is.messages %} is-active{% endif %}"
+       href="{% url 'chat:inbox' %}">
+        <span class="bottom-nav-icon">
+            {% icon "chat-dots-fill" size=20 %}
+            {% if unread_messages %}<span class="bottom-nav-badge">{{ unread_messages }}</span>{% endif %}
+        </span>
+        <span class="bottom-nav-label">Chats</span>
+    </a>
+
+    {% comment %}
+    Your own face, not a generic glyph — it is the one tab that is about you,
+    and it doubles as a reminder of which account you are signed in as. Falls
+    back to an initial, then to the icon, so the tab is never empty.
+    {% endcomment %}
+    <a class="bottom-nav-item{% if nav_is.profile %} is-active{% endif %}"
+       href="{% url 'profiles:me' %}">
+        <span class="bottom-nav-icon">
+            <span class="bottom-nav-avatar">
+                {% if user.avatar_url %}
+                    <img src="{{ user.avatar_url }}" alt="">
+                {% elif user.display_name %}
+                    <span class="bottom-nav-initial">{{ user.display_name|first }}</span>
+                {% else %}
+                    {% icon "person-circle" size=20 %}
+                {% endif %}
+            </span>
+        </span>
+        <span class="bottom-nav-label">Profile</span>
+    </a>
+</nav>

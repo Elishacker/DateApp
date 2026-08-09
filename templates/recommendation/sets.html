@@ -1,0 +1,27 @@
+{% extends "base/app.html" %}
+{% load icons %}
+{% block title %}Recommendations · {{ SITE.SITE_NAME }}{% endblock %}
+{% block app_content %}
+<header class="page-header">
+    <h1 class="page-title">Recommended for you</h1>
+</header>
+
+{% if has_sets %}
+    {% for group in sets %}
+        <section class="mb-3">
+            <h2>{{ group.title }}</h2>
+            <div class="grid grid-cards" data-feed>
+                {% for card in group.cards %}
+                    {% include "components/profile_card.html" with card=card %}
+                {% endfor %}
+            </div>
+        </section>
+    {% endfor %}
+{% else %}
+    <div class="empty">
+        <div class="empty-icon">{% icon "star-fill" size=34 %}</div>
+        <p class="empty-text">{{ empty_message }}</p>
+        <a class="btn btn-primary" href="{% url 'discovery:feed' %}">Go to Discover</a>
+    </div>
+{% endif %}
+{% endblock %}

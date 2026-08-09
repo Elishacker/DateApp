@@ -1,0 +1,48 @@
+{% extends "base/app.html" %}
+{% block title %}My profile · {{ SITE.SITE_NAME }}{% endblock %}
+{% block app_content %}
+<header class="page-header">
+    <h1 class="page-title">My profile</h1>
+    <p class="page-subtitle">This is what other members see.</p>
+</header>
+
+<div class="panel mb-2">
+    <h2 class="panel-title">Profile strength</h2>
+    <div class="meter">
+        <div class="progress">
+            <div class="progress-bar" data-progress="{{ completion }}"></div>
+        </div>
+        <span class="meter-value">{{ completion }}%</span>
+    </div>
+    {% if missing %}
+        <p class="small muted mt-1">Still to do:</p>
+        <ul class="chip-list">
+            {% for item in missing %}<li class="chip">{{ item }}</li>{% endfor %}
+        </ul>
+    {% endif %}
+</div>
+
+<div class="grid grid-2">
+    <div class="panel">
+        <h2 class="panel-title">About you</h2>
+        <p class="list-title">{{ profile.headline }}</p>
+        <p>{{ profile.bio }}</p>
+        <p class="small muted">{{ profile.location_label }}</p>
+        <a class="btn btn-ghost btn-sm" href="{% url 'profiles:edit' %}">Edit profile</a>
+    </div>
+
+    <div class="panel">
+        <h2 class="panel-title">Photos</h2>
+        {% if photos %}
+            <div class="grid grid-3">
+                {% for photo in photos %}
+                    <img class="tile-photo" src="{{ photo.url }}" alt="{{ photo.caption }}">
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="muted">No photos yet.</p>
+        {% endif %}
+        <a class="btn btn-ghost btn-sm mt-2" href="{% url 'profiles:photos' %}">Manage photos</a>
+    </div>
+</div>
+{% endblock %}

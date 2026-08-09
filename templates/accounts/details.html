@@ -1,0 +1,12 @@
+{% extends "base/app.html" %}
+{% block title %}Your details · {{ SITE.SITE_NAME }}{% endblock %}
+{% block app_content %}
+<div class="panel stack narrow">
+    <h1>Your details</h1>
+    <form method="post" novalidate>
+        {% csrf_token %}
+        {% include "components/form.html" with form=form %}
+        <button type="submit" class="btn btn-primary btn-block">Save</button>
+    </form>
+</div>
+{% endblock %}

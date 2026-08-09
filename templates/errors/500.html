@@ -1,0 +1,11 @@
+{% extends "base/base.html" %}
+{% load icons %}
+{% block title %}Something broke · {{ SITE.SITE_NAME }}{% endblock %}
+{% block content %}
+<div class="panel center narrow centered">
+    <div class="empty-icon">{% icon "shield-exclamation" size=34 %}</div>
+    <h1>Something went wrong</h1>
+    <p class="muted">We've been notified and are looking into it.</p>
+    <a class="btn btn-primary" href="{% url 'common:landing' %}">Back to home</a>
+</div>
+{% endblock %}

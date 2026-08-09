@@ -1,0 +1,11 @@
+{% extends "base/base.html" %}
+{% load icons %}
+{% block title %}Slow down · {{ SITE.SITE_NAME }}{% endblock %}
+{% block content %}
+<div class="panel center narrow centered">
+    <div class="empty-icon">{% icon "hourglass-split" size=34 %}</div>
+    <h1>Too many requests</h1>
+    <p class="muted">You're going a bit fast. Try again shortly.</p>
+    <a class="btn btn-primary" href="{% url 'common:landing' %}">Back to home</a>
+</div>
+{% endblock %}

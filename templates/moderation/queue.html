@@ -1,0 +1,60 @@
+{% extends "base/app.html" %}
+{% load icons %}
+{% block title %}Moderation queue · {{ SITE.SITE_NAME }}{% endblock %}
+{% block app_content %}
+<header class="page-header">
+    <h1 class="page-title">Moderation queue</h1>
+    <p class="page-subtitle">{{ stats.pending }} pending · {{ stats.high_risk }} high risk</p>
+</header>
+
+<nav class="tabs">
+    {% for tab in tabs %}
+        <a class="tab{% if tab.is_active %} is-active{% endif %}"
+           href="?tab={{ tab.key }}">{{ tab.label }}</a>
+    {% endfor %}
+</nav>
+
+{% if has_rows %}
+    <div class="grid grid-2">
+        {% for row in rows %}
+            <div class="panel">
+                <div class="row-between mb-1">
+                    <span class="list-title">{{ row.owner.display_name }}</span>
+                    <span class="chip">Risk {{ row.risk_score }}</span>
+                </div>
+                <p class="small muted">{{ row.object_type_label }} · trust {{ row.trust_score }}
+                   ({{ row.trust_band }})</p>
+
+                {% if row.content_url %}
+                    <img class="tile-photo" src="{{ row.content_url }}" alt="Content under review">
+                {% endif %}
+                {% if row.content_snapshot %}
+                    <p>{{ row.content_snapshot }}</p>
+                {% endif %}
+
+                {% if row.reasons %}
+                    <ul class="chip-list">
+                        {% for reason in row.reasons %}<li class="chip">{{ reason }}</li>{% endfor %}
+                    </ul>
+                {% endif %}
+
+                <form method="post" action="{% url 'moderation:decide' row.case_id %}" class="mt-2">
+                    {% csrf_token %}
+                    <input class="form-input mb-1" type="text" name="note" placeholder="Note (optional)">
+                    <div class="row">
+                        <button type="submit" name="decision" value="approve"
+                                class="btn btn-primary btn-sm">Approve</button>
+                        <button type="submit" name="decision" value="reject"
+                                class="btn btn-danger btn-sm">Reject</button>
+                    </div>
+                </form>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="empty">
+        <div class="empty-icon">{% icon "shield-check" size=34 %}</div>
+        <p class="empty-text">{{ empty_message }}</p>
+    </div>
+{% endif %}
+{% endblock %}

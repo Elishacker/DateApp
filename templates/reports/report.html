@@ -1,0 +1,14 @@
+{% extends "base/app.html" %}
+{% block title %}Report {{ person.display_name }} · {{ SITE.SITE_NAME }}{% endblock %}
+{% block app_content %}
+<div class="panel stack narrow-md">
+    <h1>Report {{ person.display_name }}</h1>
+    <p class="muted">Reports are confidential. They never see that you reported them.</p>
+
+    <form method="post" enctype="multipart/form-data" novalidate>
+        {% csrf_token %}
+        {% include "components/form.html" with form=form %}
+        <button type="submit" class="btn btn-danger btn-block">Submit report</button>
+    </form>
+</div>
+{% endblock %}

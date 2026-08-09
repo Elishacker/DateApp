@@ -1,0 +1,74 @@
+{% load icons %}
+<nav class="navbar">
+    <div class="navbar-inner">
+        {% if user.is_authenticated %}
+            {% comment %}
+            Drawer toggle. Only rendered for signed-in pages and only visible
+            below the mobile breakpoint — desktop keeps its static sidebar.
+            {% endcomment %}
+            <button type="button" class="navbar-burger" data-drawer-toggle
+                    aria-label="Open menu" aria-expanded="false" aria-controls="app-sidebar">
+                {% icon "list" size=20 %}
+            </button>
+        {% endif %}
+
+        <a class="navbar-brand" href="{% url 'common:landing' %}">{{ SITE.SITE_NAME }}</a>
+
+        {% if user.is_authenticated %}
+            <div class="navbar-links">
+                <a class="navbar-search" href="{% url 'discovery:search' %}"
+                   title="Search" aria-label="Search">
+                    {% icon "search" size=17 %}
+                </a>
+                <a href="{% url 'discovery:feed' %}">Discover</a>
+                <a href="{% url 'matches:list' %}">Matches</a>
+                <a href="{% url 'chat:inbox' %}">
+                    Messages
+                    {% if unread_messages %}<span class="badge">{{ unread_messages }}</span>{% endif %}
+                </a>
+                <a href="{% url 'notifications:inbox' %}">
+                    Alerts
+                    {% if unread_notifications %}<span class="badge">{{ unread_notifications }}</span>{% endif %}
+                </a>
+            </div>
+
+            {% comment %}
+            Signing out lives at the foot of the sidebar, with the other
+            account actions — not up here beside navigation, where it sat one
+            slip away from every link people actually meant to click.
+            {% endcomment %}
+            <div class="navbar-actions">
+                {% comment %}
+                Two ways into the same two places, one per size. Desktop shows
+                the avatar here because the bottom bar does not exist there;
+                mobile shows alerts here because the avatar already lives in
+                the bottom bar, and a bell is what the top bar was missing.
+                {% endcomment %}
+                <a class="navbar-alerts" href="{% url 'notifications:inbox' %}"
+                   title="Notifications" aria-label="Notifications">
+                    {% icon "bell-fill" size=19 %}
+                    {% if unread_notifications %}
+                        <span class="navbar-alerts-badge" data-notif-count>{{ unread_notifications }}</span>
+                    {% endif %}
+                </a>
+
+                <a class="navbar-avatar" href="{% url 'profiles:me' %}" title="My profile">
+                    {% if user.avatar_url %}
+                        <img src="{{ user.avatar_url }}" alt="Your profile">
+                    {% else %}
+                        <span class="avatar-initial">{{ user.display_name|first }}</span>
+                    {% endif %}
+                </a>
+            </div>
+        {% else %}
+            <div class="navbar-links">
+                <a href="{% url 'common:about' %}">About</a>
+                <a href="{% url 'common:safety' %}">Safety</a>
+            </div>
+            <div class="navbar-actions">
+                <a class="btn btn-ghost btn-sm" href="{% url 'authentication:login' %}">Sign in</a>
+                <a class="btn btn-primary btn-sm" href="{% url 'authentication:register' %}">Join free</a>
+            </div>
+        {% endif %}
+    </div>
+</nav>

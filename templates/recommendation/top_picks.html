@@ -1,0 +1,22 @@
+{% extends "base/app.html" %}
+{% load icons %}
+{% block title %}Top picks · {{ SITE.SITE_NAME }}{% endblock %}
+{% block app_content %}
+<header class="page-header">
+    <h1 class="page-title">Today's top picks</h1>
+    <p class="page-subtitle">Hand-ranked from your compatibility scores. Refreshes daily.</p>
+</header>
+
+{% if has_cards %}
+    <div class="grid grid-cards" data-feed>
+        {% for card in cards %}
+            {% include "components/profile_card.html" with card=card %}
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="empty">
+        <div class="empty-icon">{% icon "star-fill" size=34 %}</div>
+        <p class="empty-text">{{ empty_message }}</p>
+    </div>
+{% endif %}
+{% endblock %}

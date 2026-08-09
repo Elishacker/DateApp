@@ -1,0 +1,11 @@
+{% extends "base/base.html" %}
+{% load icons %}
+{% block title %}Bad request · {{ SITE.SITE_NAME }}{% endblock %}
+{% block content %}
+<div class="panel center narrow centered">
+    <div class="empty-icon">{% icon "exclamation-triangle-fill" size=34 %}</div>
+    <h1>Bad request</h1>
+    <p class="muted">We couldn't understand that request.</p>
+    <a class="btn btn-primary" href="{% url 'common:landing' %}">Back to home</a>
+</div>
+{% endblock %}

@@ -1,0 +1,16 @@
+<footer class="footer">
+    <div class="footer-inner">
+        <div class="footer-brand">
+            <p class="footer-name">{{ SITE.SITE_NAME }}</p>
+            <p class="footer-tagline">{{ SITE.TAGLINE }}</p>
+        </div>
+
+        <nav class="footer-links">
+            <a href="{% url 'common:about' %}">About</a>
+            <a href="{% url 'common:safety' %}">Safety</a>
+            <a href="{% url 'common:terms' %}">Terms</a>
+            <a href="{% url 'common:privacy' %}">Privacy</a>
+            <a href="mailto:{{ SITE.SUPPORT_EMAIL }}">Support</a>
+        </nav>
+    </div>
+</footer>

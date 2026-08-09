@@ -1,0 +1,26 @@
+{% extends "base/app.html" %}
+{% load icons %}
+{% block title %}Messages · {{ SITE.SITE_NAME }}{% endblock %}
+
+{% block app_content %}
+{% comment %}
+The inbox is just the list of conversations, full width. There is no second
+pane holding a "pick one" placeholder: the list already says that, and an empty
+panel next to it only took up room. Opening a conversation is what puts the
+rail and a thread side by side.
+{% endcomment %}
+<div class="chat-section is-list">
+    {% if has_conversations %}
+        {% include "chat/_rail.html" %}
+    {% else %}
+        <div class="chat-shell chat-shell-empty">
+            <div class="chat-intro">
+                {% icon "chat-dots-fill" size=32 %}
+                <p class="chat-intro-title">No conversations yet</p>
+                <p class="chat-intro-text">{{ empty_message }}</p>
+                <a class="btn btn-primary mt-2" href="{% url 'discovery:feed' %}">Find people</a>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

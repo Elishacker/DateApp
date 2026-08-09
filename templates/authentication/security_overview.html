@@ -1,0 +1,64 @@
+{% extends "base/app.html" %}
+{% block title %}Account security · {{ SITE.SITE_NAME }}{% endblock %}
+{% block app_content %}
+<header class="page-header">
+    <h1 class="page-title">Account security</h1>
+</header>
+
+<div class="grid grid-2">
+    <div class="panel">
+        <h2 class="panel-title">Two-factor authentication</h2>
+        {% if mfa.confirmed %}
+            <p class="tone-ok">Enabled · {{ mfa.recovery_codes_remaining }} recovery codes left</p>
+            <form method="post" action="{% url 'authentication:mfa_disable' %}">
+                {% csrf_token %}
+                <input class="form-input" type="password" name="password"
+                       placeholder="Confirm your password" required>
+                <button type="submit" class="btn btn-danger btn-sm mt-1">
+                    Turn off
+                </button>
+            </form>
+        {% else %}
+            <p class="muted">Not enabled. This is the single best thing you can do
+               to protect your account.</p>
+            <a class="btn btn-primary btn-sm" href="{% url 'authentication:mfa_setup' %}">
+                Turn on 2FA
+            </a>
+        {% endif %}
+    </div>
+
+    <div class="panel">
+        <h2 class="panel-title">Connected providers</h2>
+        {% if providers %}
+            <ul class="chip-list">
+                {% for provider in providers %}<li class="chip">{{ provider }}</li>{% endfor %}
+            </ul>
+        {% else %}
+            <p class="muted">No social sign-in connected.</p>
+        {% endif %}
+    </div>
+</div>
+
+<div class="panel mt-2">
+    <h2 class="panel-title">Recent sign-in attempts</h2>
+    <div class="table-wrap">
+        <table class="table">
+            <thead><tr><th>When</th><th>Outcome</th><th>IP</th><th>Risk</th></tr></thead>
+            <tbody>
+            {% for attempt in attempts %}
+                <tr>
+                    <td>{{ attempt.created_at }}</td>
+                    <td>{% if attempt.was_successful %}
+                            <span class="tone-ok">Success</span>
+                        {% else %}
+                            <span class="tone-danger">{{ attempt.outcome }}</span>
+                        {% endif %}</td>
+                    <td>{{ attempt.ip_address }}</td>
+                    <td>{{ attempt.risk_score }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

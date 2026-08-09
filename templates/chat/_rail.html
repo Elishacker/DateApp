@@ -1,0 +1,42 @@
+{% load icons %}
+{% comment %}
+The conversation rail. Shared by the inbox and the open-thread page so the chat
+section keeps the same left column wherever you are inside it.
+{% endcomment %}
+<aside class="chat-rail">
+    <header class="chat-rail-head">
+        <h2 class="chat-rail-title">Messages</h2>
+        {% if unread_total %}<span class="badge">{{ unread_total }}</span>{% endif %}
+    </header>
+
+    {% if rows %}
+        <div class="chat-rail-list">
+            {% for row in rows %}
+                <a class="chat-rail-item{% if row.is_active_row %} is-current{% endif %}{% if row.has_unread %} is-unread{% endif %}"
+                   href="{% url 'chat:conversation' row.conversation_id %}">
+                    <span class="list-avatar">
+                        {% if row.user.avatar_url %}
+                            <img src="{{ row.user.avatar_url }}" alt="{{ row.user.display_name }}">
+                        {% else %}{{ row.user.display_name|first }}{% endif %}
+                        {% if row.user.is_online %}<span class="presence-dot"></span>{% endif %}
+                    </span>
+                    <span class="chat-rail-body">
+                        <span class="chat-rail-name">
+                            {{ row.user.display_name }}
+                            {% if row.user.is_verified %}
+                                {% icon "patch-check-fill" size=12 css_class="tone-verified" label="Verified" %}
+                            {% endif %}
+                        </span>
+                        <span class="chat-rail-preview">{{ row.preview }}</span>
+                    </span>
+                    <span class="chat-rail-side">
+                        {% if row.unread_count %}<span class="badge">{{ row.unread_count }}</span>{% endif %}
+                        {% if row.is_muted %}{% icon "bell-fill" size=12 %}{% endif %}
+                    </span>
+                </a>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="chat-rail-empty">No conversations yet.</p>
+    {% endif %}
+</aside>

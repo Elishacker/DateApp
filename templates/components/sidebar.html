@@ -1,0 +1,105 @@
+{% load icons %}
+<aside class="sidebar" id="app-sidebar" data-drawer>
+    {% comment %}
+    On mobile this same markup slides in as a drawer, so it carries a header
+    that only appears at that size. Desktop renders it as a static column.
+    {% endcomment %}
+    <div class="sidebar-head">
+        <span class="sidebar-brand">{{ SITE.SITE_NAME }}</span>
+        <button type="button" class="sidebar-close" data-drawer-close aria-label="Close menu">
+            {% icon "x-lg" size=18 %}
+        </button>
+    </div>
+
+    <nav class="sidebar-nav">
+        <a class="sidebar-link" href="{% url 'discovery:search' %}">
+            <span class="sidebar-icon">{% icon "search" size=16 %}</span><span>Search</span>
+        </a>
+        <a class="sidebar-link{% if nav_is.discover %} is-active{% endif %}" href="{% url 'discovery:feed' %}">
+            <span class="sidebar-icon">{% icon "fire" size=16 %}</span><span>Discover</span>
+        </a>
+        <a class="sidebar-link" href="{% url 'recommendation:top_picks' %}">
+            <span class="sidebar-icon">{% icon "star-fill" size=16 %}</span><span>Top picks</span>
+        </a>
+        <a class="sidebar-link{% if nav_is.likes %} is-active{% endif %}" href="{% url 'discovery:admirers' %}"
+           title="{{ unseen_admirers_title }}">
+            <span class="sidebar-icon">{% icon "heart-fill" size=16 %}</span><span>Likes you</span>
+            {% if unseen_super_likes %}
+                <span class="badge badge-super">{% icon "star-fill" size=10 %}{{ unseen_super_likes }}</span>
+            {% endif %}
+            {% if unseen_likes %}<span class="badge">{{ unseen_likes }}</span>{% endif %}
+        </a>
+        <a class="sidebar-link{% if nav_is.matches %} is-active{% endif %}" href="{% url 'matches:list' %}">
+            <span class="sidebar-icon">{% icon "chat-heart-fill" size=16 %}</span><span>Matches</span>
+        </a>
+        <a class="sidebar-link{% if nav_is.messages %} is-active{% endif %}" href="{% url 'chat:inbox' %}">
+            <span class="sidebar-icon">{% icon "chat-dots-fill" size=16 %}</span><span>Messages</span>
+            {% if unread_messages %}<span class="badge">{{ unread_messages }}</span>{% endif %}
+        </a>
+        <a class="sidebar-link{% if nav_is.notifications %} is-active{% endif %}" href="{% url 'notifications:inbox' %}">
+            <span class="sidebar-icon">{% icon "bell-fill" size=16 %}</span><span>Notifications</span>
+            {% if unread_notifications %}<span class="badge" data-notif-count>{{ unread_notifications }}</span>{% endif %}
+        </a>
+    </nav>
+
+    <div class="sidebar-divider"></div>
+
+    <nav class="sidebar-nav">
+        {% comment %}
+        Your own row wears your photo, the same as the Profile tab in the
+        bottom bar. Falls back to the generic icon when there is no picture.
+        {% endcomment %}
+        <a class="sidebar-link" href="{% url 'profiles:me' %}">
+            <span class="sidebar-icon">
+                {% if user.avatar_url %}
+                    <span class="sidebar-avatar"><img src="{{ user.avatar_url }}" alt=""></span>
+                {% else %}
+                    {% icon "person-circle" size=16 %}
+                {% endif %}
+            </span><span>My profile</span>
+        </a>
+        <a class="sidebar-link" href="{% url 'profiles:preferences' %}">
+            <span class="sidebar-icon">{% icon "sliders2" size=16 %}</span><span>Preferences</span>
+        </a>
+        <a class="sidebar-link" href="{% url 'verification:home' %}">
+            <span class="sidebar-icon">{% icon "patch-check-fill" size=16 %}</span><span>Verification</span>
+        </a>
+        <a class="sidebar-link" href="{% url 'subscriptions:plans' %}">
+            <span class="sidebar-icon">{% icon "gem" size=16 %}</span><span>Premium</span>
+        </a>
+        <a class="sidebar-link" href="{% url 'security:my_security' %}">
+            <span class="sidebar-icon">{% icon "shield-lock-fill" size=16 %}</span><span>Security</span>
+        </a>
+        <a class="sidebar-link" href="{% url 'accounts:overview' %}">
+            <span class="sidebar-icon">{% icon "gear-fill" size=16 %}</span><span>Settings</span>
+        </a>
+
+        {% comment %}
+        Signing out is a POST so it cannot be triggered by a stray GET, and it
+        is styled as danger so it never reads as one more place to navigate to.
+        {% endcomment %}
+        <form class="sidebar-form" method="post" action="{% url 'authentication:logout' %}">
+            {% csrf_token %}
+            <button type="submit" class="sidebar-link sidebar-danger" title="Sign out">
+                <span class="sidebar-icon">{% icon "box-arrow-right" size=16 %}</span><span>Sign out</span>
+            </button>
+        </form>
+    </nav>
+
+    {% comment %}
+    staff_nav is computed by apps.accounts.context_processors.role_context from
+    the requester's capabilities. It is an empty list for ordinary members, so
+    this block contains no role logic and cannot leak a link by mistake.
+    {% endcomment %}
+    {% if staff_nav %}
+        <div class="sidebar-divider"></div>
+        <p class="sidebar-heading">Staff · {{ role_label }}</p>
+        <nav class="sidebar-nav">
+            {% for item in staff_nav %}
+                <a class="sidebar-link" href="{{ item.url }}">
+                    <span class="sidebar-icon">{% icon item.icon size=16 %}</span><span>{{ item.label }}</span>
+                </a>
+            {% endfor %}
+        </nav>
+    {% endif %}
+</aside>

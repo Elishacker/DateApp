@@ -1,0 +1,34 @@
+{% extends "base/app.html" %}
+{% block title %}Plans · {{ SITE.SITE_NAME }}{% endblock %}
+{% block app_content %}
+<header class="page-header">
+    <h1 class="page-title">Choose your plan</h1>
+    <p class="page-subtitle">You're on {{ summary.plan_name }} right now.</p>
+</header>
+
+<div class="grid grid-2">
+    {% for plan in plans %}
+        <div class="plan{% if plan.is_featured %} is-featured{% endif %}{% if plan.is_current %} is-current{% endif %}">
+            <p class="plan-name">{{ plan.name }}</p>
+            <p class="plan-tagline">{{ plan.tagline }}</p>
+            <p class="plan-price">{{ plan.price_label }}</p>
+            <p class="plan-period">per {{ plan.duration_days }} days</p>
+
+            <ul class="plan-features">
+                {% for feature in plan.features %}<li>{{ feature }}</li>{% endfor %}
+            </ul>
+
+            {% if plan.is_current %}
+                <button type="button" class="btn btn-ghost btn-block" disabled>
+                    {{ plan.cta_label }}
+                </button>
+            {% elif plan.is_free %}
+                <span class="chip">{{ plan.cta_label }}</span>
+            {% else %}
+                <a class="btn btn-primary btn-block"
+                   href="{% url 'subscriptions:checkout' plan.code %}">{{ plan.cta_label }}</a>
+            {% endif %}
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

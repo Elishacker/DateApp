@@ -1,0 +1,26 @@
+{% extends "base/base.html" %}
+{% block title %}Safety · {{ SITE.SITE_NAME }}{% endblock %}
+{% block content %}
+<div class="panel stack narrow-lg centered">
+    <h1>Staying safe on Zynora</h1>
+    <h2>Before you meet</h2>
+    <ul>
+        <li>Keep conversations on Zynora until you trust someone.</li>
+        <li>Video call before meeting in person.</li>
+        <li>Look for the verified badge.</li>
+    </ul>
+    <h2>Never send money</h2>
+    <p>No genuine match will ask you for money, gift cards or crypto. Requests
+       like these are the single most common scam pattern — report them.</p>
+    <h2>Meeting in person</h2>
+    <ul>
+        <li>Meet in a public place the first few times.</li>
+        <li>Tell a friend where you're going and when you expect to be back.</li>
+        <li>Arrange your own transport there and back.</li>
+    </ul>
+    <h2>Reporting</h2>
+    <p>Every profile and conversation has a report option. Reports are reviewed by
+       our safety team, and blocking is immediate.</p>
+    <p>Urgent concern? Email <a href="mailto:{{ SITE.SUPPORT_EMAIL }}">{{ SITE.SUPPORT_EMAIL }}</a>.</p>
+</div>
+{% endblock %}

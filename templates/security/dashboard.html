@@ -1,0 +1,70 @@
+{% extends "base/app.html" %}
+{% block title %}Security operations · {{ SITE.SITE_NAME }}{% endblock %}
+{% block app_content %}
+<header class="page-header">
+    <h1 class="page-title">Security operations</h1>
+</header>
+
+<div class="grid grid-3 mb-3">
+    <div class="tile"><p class="tile-label">Open events</p>
+        <p class="tile-value">{{ stats.open_events }}</p></div>
+    <div class="tile"><p class="tile-label">Critical</p>
+        <p class="tile-value tone-danger">{{ stats.critical }}</p></div>
+    <div class="tile"><p class="tile-label">Blocked IPs</p>
+        <p class="tile-value">{{ stats.blocked_ips }}</p></div>
+    <div class="tile"><p class="tile-label">Rate limits (24h)</p>
+        <p class="tile-value">{{ stats.rate_limit_breaches_24h }}</p></div>
+</div>
+
+<div class="panel mb-2">
+    <h2 class="panel-title">Open security events</h2>
+    <div class="table-wrap">
+        <table class="table">
+            <thead><tr><th>When</th><th>Member</th><th>Event</th>
+                       <th>Severity</th><th>Risk</th><th>IP</th></tr></thead>
+            <tbody>
+            {% for event in events %}
+                <tr>
+                    <td>{{ event.created_at }}</td>
+                    <td>{% if event.user %}{{ event.user.display_name }}{% else %}—{% endif %}</td>
+                    <td>{{ event.description }}</td>
+                    <td class="tone-{{ event.tone }}">{{ event.severity }}</td>
+                    <td>{{ event.risk_score }}</td>
+                    <td>{{ event.ip_address }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="grid grid-2">
+    <div class="panel">
+        <h2 class="panel-title">Blocked IPs</h2>
+        <div class="table-wrap">
+            <table class="table">
+                <thead><tr><th>IP</th><th>Score</th><th>Until</th></tr></thead>
+                <tbody>
+                {% for row in blocked_ips %}
+                    <tr><td>{{ row.ip }}</td><td>{{ row.score }}</td><td>{{ row.blocked_until }}</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="panel">
+        <h2 class="panel-title">Recent rate-limit breaches</h2>
+        <div class="table-wrap">
+            <table class="table">
+                <thead><tr><th>Scope</th><th>Identifier</th><th>Hits</th></tr></thead>
+                <tbody>
+                {% for row in recent_breaches %}
+                    <tr><td>{{ row.scope }}</td><td>{{ row.identifier }}</td><td>{{ row.hits }}</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends "base/app.html" %}
+{% load icons %}
+{% block title %}Verification queue · {{ SITE.SITE_NAME }}{% endblock %}
+{% block app_content %}
+<header class="page-header">
+    <h1 class="page-title">Verification queue</h1>
+    <p class="page-subtitle">
+        {{ stats.pending }} pending · {{ stats.approved }} approved · {{ stats.rejected }} rejected
+    </p>
+</header>
+
+{% if has_rows %}
+    <div class="grid grid-2">
+        {% for row in rows %}
+            <div class="panel">
+                <div class="row-between mb-1">
+                    <span class="list-title">{{ row.member.display_name }}</span>
+                    <span class="chip">{{ row.kind }}</span>
+                </div>
+
+                {% if row.challenge_pose %}
+                    <p class="small muted">Requested pose: {{ row.challenge_pose }}</p>
+                {% endif %}
+
+                {% if row.document_url %}
+                    <img class="tile-photo" src="{{ row.document_url }}" alt="Verification evidence">
+                {% else %}
+                    <p class="muted">Evidence no longer available.</p>
+                {% endif %}
+
+                <p class="small muted mt-1">Submitted {{ row.created_at }} · attempt {{ row.attempts }}</p>
+
+                <form method="post" action="{% url 'verification:decide' row.request_id %}" class="mt-2">
+                    {% csrf_token %}
+                    <input class="form-input mb-1" type="text" name="reason"
+                           placeholder="Reason (required when rejecting)">
+                    <div class="row">
+                        <button type="submit" name="decision" value="approve"
+                                class="btn btn-primary btn-sm">Approve</button>
+                        <button type="submit" name="decision" value="reject"
+                                class="btn btn-danger btn-sm">Reject</button>
+                    </div>
+                </form>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="empty">
+        <div class="empty-icon">{% icon "patch-check-fill" size=34 %}</div>
+        <p class="empty-text">{{ empty_message }}</p>
+    </div>
+{% endif %}
+{% endblock %}

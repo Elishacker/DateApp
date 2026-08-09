@@ -1,0 +1,44 @@
+{% extends "base/base.html" %}
+{% block title %}{{ title }} · {{ SITE.SITE_NAME }}{% endblock %}
+{% block content %}
+<div class="wizard">
+    <div class="wizard-steps">
+        {% for step in steps %}
+            <div class="wizard-step{% if step.is_done %} is-done{% elif step.is_current %} is-current{% endif %}"></div>
+        {% endfor %}
+    </div>
+
+    <div class="panel stack">
+        <p class="small muted">Step {{ step_number }} of {{ total_steps }} · {{ percent_complete }}% complete</p>
+        <h1>{{ title }}</h1>
+        <p class="muted">{{ subtitle }}</p>
+
+        <form method="post" novalidate>
+            {% csrf_token %}
+            {% if form.errors %}
+                {% for error in form.interests.errors %}<p class="form-error">{{ error }}</p>{% endfor %}
+            {% endif %}
+
+            {% for group in interest_groups %}
+                <div class="form-group">
+                    <p class="form-label">{{ group.category }}</p>
+                    <ul>
+                        {% for interest in group.items %}
+                            <li>
+                                <label>
+                                    <input type="checkbox" name="interests"
+                                           value="{{ interest.id }}" class="form-check">
+                                    {{ interest.name }}
+                                </label>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endfor %}
+
+            <button type="submit" class="btn btn-primary btn-block">Continue</button>
+        </form>
+
+    </div>
+</div>
+{% endblock %}

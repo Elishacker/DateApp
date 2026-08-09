@@ -1,0 +1,60 @@
+{% extends "base/base.html" %}
+
+{% block title %}{{ SITE.SITE_NAME }} — {{ SITE.TAGLINE }}{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <h1 class="hero-title">
+        Meet someone who <span class="hero-gradient">actually gets you</span>
+    </h1>
+    <p class="hero-sub">
+        Zynora matches on interests, lifestyle and intent — not just photos.
+        Verified people, real conversations, and security built in from day one.
+    </p>
+    <div class="hero-actions">
+        <a class="btn btn-primary btn-lg" href="{% url 'authentication:register' %}">Join free</a>
+        <a class="btn btn-ghost btn-lg" href="{% url 'authentication:login' %}">Sign in</a>
+    </div>
+</section>
+
+<section class="grid grid-3">
+    {% for title, text in highlights %}
+        <div class="panel feature">
+            <h3 class="feature-title">{{ title }}</h3>
+            <p class="feature-text">{{ text }}</p>
+        </div>
+    {% endfor %}
+</section>
+
+{% comment %}
+Pricing hidden during the free-growth phase — re-enable once the network has
+enough density to introduce paid plans. See LandingView.get_context_data for
+the `plans` context var this block reads.
+
+{% if plans %}
+<section class="stack mt-4">
+    <h2 class="center">Simple plans</h2>
+    <div class="grid grid-2">
+        {% for plan in plans %}
+            <div class="plan{% if plan.is_featured %} is-featured{% endif %}">
+                <p class="plan-name">{{ plan.name }}</p>
+                <p class="plan-tagline">{{ plan.tagline }}</p>
+                <p class="plan-price">{{ plan.price_label }}</p>
+                <p class="plan-period">per {{ plan.duration_days }} days</p>
+
+                <ul class="plan-features">
+                    {% for feature in plan.features %}
+                        <li>{{ feature }}</li>
+                    {% endfor %}
+                </ul>
+
+                <a class="btn btn-primary btn-block" href="{% url 'authentication:register' %}">
+                    Get started
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+{% endcomment %}
+{% endblock %}

@@ -1,0 +1,101 @@
+{% load icons %}
+{% comment %}
+One discovery card. Every value is pre-computed in DiscoveryService._hydrate,
+so this file only outputs — no calculation, no conditionals beyond presence.
+
+Identity sits on a single line: verified badge, name, age, status. Three
+actions only — like, super like, message.
+{% endcomment %}
+
+<article class="card" data-user-id="{{ card.user.id }}"
+         data-display-name="{{ card.user.display_name }}">
+
+    <a class="card-media" href="{% url 'profiles:public' card.user.id %}">
+        {% if card.primary_photo_url %}
+            <img src="{{ card.primary_photo_url }}" alt="{{ card.user.display_name }}" loading="lazy">
+        {% else %}
+            <span class="card-placeholder">{{ card.user.display_name|first }}</span>
+        {% endif %}
+        <span class="card-score">{{ card.score }}%</span>
+
+        {% if show_admirer_kind %}
+            <span class="card-admirer{% if card.admirer_is_super %} is-super{% endif %}">
+                {% if card.admirer_is_super %}
+                    {% icon "star-fill" size=10 %}
+                {% else %}
+                    {% icon "heart-fill" size=10 %}
+                {% endif %}
+                <span>{{ card.admirer_label }}</span>
+            </span>
+        {% endif %}
+
+        {% if card.has_liked %}
+            <span class="card-liked" data-liked-flag>
+                {% if card.is_super_liked %}
+                    {% icon "star-fill" size=10 %}<span>Super liked</span>
+                {% else %}
+                    {% icon "heart-fill" size=10 %}<span>Liked</span>
+                {% endif %}
+            </span>
+        {% endif %}
+    </a>
+
+    <div class="card-body">
+        <p class="card-identity">
+            {% if card.user.is_verified %}
+                {% icon "patch-check-fill" size=12 css_class="card-verified" label="Verified member" %}
+            {% endif %}
+            <span class="card-fullname">{{ card.user.display_name }}</span>
+            {% if card.user.age %}<span class="card-age">{{ card.user.age }}</span>{% endif %}
+            {% if card.user.is_online %}<span class="card-online">Online</span>{% endif %}
+        </p>
+
+        {% if card.region_label %}
+            <p class="card-meta{% if card.outside_range %} is-far{% endif %}">
+                {% icon "geo-alt-fill" size=11 %}<span>{{ card.region_label }}</span>
+            </p>
+        {% endif %}
+
+        {% if card.job_title %}
+            <p class="card-meta">
+                {% icon "briefcase-fill" size=11 %}<span>{{ card.job_title }}</span>
+            </p>
+        {% endif %}
+
+        {% if card.received_total %}
+            <p class="card-likes" title="{{ card.received_label }}">
+                {% if card.like_count %}
+                    <span class="card-likes-part">
+                        {% icon "heart-fill" size=11 %}<span>{{ card.like_count }}</span>
+                    </span>
+                {% endif %}
+                {% if card.super_like_count %}
+                    <span class="card-likes-part is-super">
+                        {% icon "star-fill" size=11 %}<span>{{ card.super_like_count }}</span>
+                    </span>
+                {% endif %}
+            </p>
+        {% endif %}
+    </div>
+
+    <div class="card-actions">
+        <button type="button"
+                class="act act-like{% if card.has_liked %} is-active{% endif %}"
+                data-swipe="like" data-user-id="{{ card.user.id }}"
+                title="{% if card.has_liked %}Liked{% else %}Like{% endif %}"
+                aria-label="Like"{% if card.has_liked %} disabled{% endif %}>
+            {% icon "heart-fill" size=15 %}
+        </button>
+        <button type="button"
+                class="act act-super{% if card.is_super_liked %} is-active{% endif %}"
+                data-swipe="super_like" data-user-id="{{ card.user.id }}"
+                title="{% if card.is_super_liked %}Super liked{% else %}Super like{% endif %}"
+                aria-label="Super like"{% if card.is_super_liked %} disabled{% endif %}>
+            {% icon "star-fill" size=15 %}
+        </button>
+        <a class="act act-chat" href="{% url 'chat:with' card.user.id %}"
+           title="Send a message" aria-label="Send a message">
+            {% icon "chat-dots-fill" size=15 %}
+        </a>
+    </div>
+</article>

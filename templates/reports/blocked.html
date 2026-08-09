@@ -1,0 +1,38 @@
+{% extends "base/app.html" %}
+{% load icons %}
+{% block title %}Blocked members · {{ SITE.SITE_NAME }}{% endblock %}
+{% block app_content %}
+<header class="page-header">
+    <h1 class="page-title">Blocked members</h1>
+    <p class="page-subtitle">They can't see you and you can't see them.</p>
+</header>
+
+{% if has_rows %}
+    <div class="list">
+        {% for row in rows %}
+            <div class="list-item">
+                <div class="list-avatar">
+                    {% if row.user.avatar_url %}
+                        <img src="{{ row.user.avatar_url }}" alt="{{ row.user.display_name }}">
+                    {% else %}{{ row.user.display_name|first }}{% endif %}
+                </div>
+                <div class="list-body">
+                    <p class="list-title">{{ row.user.display_name }}</p>
+                    <p class="list-sub">Blocked {{ row.blocked_at }}</p>
+                </div>
+                <div class="list-side">
+                    <form method="post" action="{% url 'reports:unblock' row.user.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-ghost btn-sm">Unblock</button>
+                    </form>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="empty">
+        <div class="empty-icon">{% icon "x-circle-fill" size=34 %}</div>
+        <p class="empty-text">{{ empty_message }}</p>
+    </div>
+{% endif %}
+{% endblock %}

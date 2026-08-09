@@ -1,0 +1,60 @@
+{% extends "base/app.html" %}
+{% load icons %}
+{% block title %}Discover · {{ SITE.SITE_NAME }}{% endblock %}
+
+{% block app_content %}
+<header class="page-header" data-presence data-badge-poll>
+    <h1 class="page-title">Discover</h1>
+    <p class="page-subtitle" data-quota-message>{{ quota_message }}</p>
+    {% if widened_notice %}
+        <p class="small muted">{% icon "info-circle-fill" size=13 %} {{ widened_notice }}</p>
+    {% endif %}
+</header>
+
+<nav class="tabs">
+    {% for tab in tabs %}
+        <a class="tab{% if tab.is_active %} is-active{% endif %}"
+           href="?tab={{ tab.key }}">{{ tab.label }}</a>
+    {% endfor %}
+</nav>
+
+{% if can_rewind %}
+    <div class="row mb-2">
+        <button type="button" class="btn btn-ghost btn-sm" data-rewind>{% icon "arrow-counterclockwise" size=14 %}<span>Undo last swipe</span></button>
+    </div>
+{% endif %}
+
+{% if has_cards %}
+    <div class="grid grid-cards" data-feed>
+        {% for card in cards %}
+            {% include "components/profile_card.html" with card=card %}
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="empty">
+        <div class="empty-icon">{% icon "globe-americas" size=34 %}</div>
+        <p class="empty-text">{{ empty_message }}</p>
+
+        {% if empty_reason %}
+            <p class="small muted">{{ empty_reason.headline }}</p>
+            <div class="list mt-2">
+                {% for reason in empty_reason.reasons %}
+                    <div class="list-item">
+                        <div class="list-body">
+                            <p class="list-sub">{{ reason.text }}</p>
+                        </div>
+                        {% if reason.action_url %}
+                            <div class="list-side">
+                                <a class="btn btn-ghost btn-sm"
+                                   href="{{ reason.action_url }}">{{ reason.action_label }}</a>
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <a class="btn btn-primary" href="{% url 'profiles:preferences' %}">Adjust preferences</a>
+        {% endif %}
+    </div>
+{% endif %}
+{% endblock %}

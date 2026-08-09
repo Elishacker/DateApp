@@ -1,0 +1,60 @@
+{% extends "base/app.html" %}
+{% block title %}Edit profile · {{ SITE.SITE_NAME }}{% endblock %}
+{% block app_content %}
+<header class="page-header">
+    <h1 class="page-title">Edit profile</h1>
+</header>
+
+<div class="stack">
+    <div class="panel">
+        <h2 class="panel-title">The basics</h2>
+        <form method="post" novalidate>
+            {% csrf_token %}
+            <input type="hidden" name="section" value="basics">
+            {% include "components/form.html" with form=basics_form %}
+            <button type="submit" class="btn btn-primary">Save</button>
+        </form>
+    </div>
+
+    <div class="panel">
+        <h2 class="panel-title">Work and study</h2>
+        <form method="post" novalidate>
+            {% csrf_token %}
+            <input type="hidden" name="section" value="work">
+            {% include "components/form.html" with form=work_form %}
+            <button type="submit" class="btn btn-primary">Save</button>
+        </form>
+    </div>
+
+    <div class="panel">
+        <h2 class="panel-title">Lifestyle</h2>
+        <form method="post" novalidate>
+            {% csrf_token %}
+            <input type="hidden" name="section" value="lifestyle">
+            {% include "components/form.html" with form=lifestyle_form %}
+            <button type="submit" class="btn btn-primary">Save</button>
+        </form>
+    </div>
+
+    <div class="panel">
+        <h2 class="panel-title">Interests</h2>
+        <form method="post" novalidate>
+            {% csrf_token %}
+            <input type="hidden" name="section" value="interests">
+            {% include "components/form.html" with form=interests_form %}
+            <button type="submit" class="btn btn-primary">Save</button>
+        </form>
+    </div>
+
+    <div class="panel">
+        <h2 class="panel-title">Location</h2>
+        <form method="post" novalidate>
+            {% csrf_token %}
+            <input type="hidden" name="section" value="location">
+            {% include "components/form.html" with form=location_form %}
+            <button type="button" class="btn btn-ghost" data-locate>Use my location</button>
+            <button type="submit" class="btn btn-primary">Save</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

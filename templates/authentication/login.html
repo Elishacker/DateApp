@@ -1,0 +1,17 @@
+{% extends "base/auth.html" %}
+{% block title %}Sign in · {{ SITE.SITE_NAME }}{% endblock %}
+{% block auth_title %}Welcome back{% endblock %}
+{% block auth_subtitle %}Sign in to keep going.{% endblock %}
+{% block auth_content %}
+<form method="post" novalidate>
+    {% csrf_token %}
+    {% include "components/form.html" with form=form %}
+    <button type="submit" class="btn btn-primary btn-block btn-lg">Sign in</button>
+</form>
+<p class="small center mt-2">
+    <a href="{% url 'authentication:password_reset' %}">Forgot your password?</a>
+</p>
+{% endblock %}
+{% block auth_footer %}
+New to {{ SITE.SITE_NAME }}? <a href="{% url 'authentication:register' %}">Create an account</a>
+{% endblock %}

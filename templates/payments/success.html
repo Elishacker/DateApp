@@ -1,0 +1,11 @@
+{% extends "base/app.html" %}
+{% load icons %}
+{% block title %}Payment complete · {{ SITE.SITE_NAME }}{% endblock %}
+{% block app_content %}
+<div class="panel center narrow centered">
+    <div class="empty-icon">{% icon "award-fill" size=34 %}</div>
+    <h1>You're all set</h1>
+    <p class="muted">Your {{ summary.plan_name }} plan is active.</p>
+    <a class="btn btn-primary" href="{% url 'discovery:feed' %}">Start discovering</a>
+</div>
+{% endblock %}

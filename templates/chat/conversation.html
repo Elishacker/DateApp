@@ -1,0 +1,144 @@
+{% extends "base/app.html" %}
+{% load static icons %}
+{% block title %}{{ person.display_name }} · {{ SITE.SITE_NAME }}{% endblock %}
+
+{% block app_content %}
+<div class="chat-section has-thread">
+    {% include "chat/_rail.html" %}
+
+    <div class="chat-shell" data-conversation-id="{{ conversation_id }}"
+         data-user-id="{{ user.id }}" data-sprite="{% static 'img/icons.svg' %}">
+
+        <header class="chat-header">
+            <a class="chat-back" href="{% url 'chat:inbox' %}" aria-label="Back to messages">
+                {% icon "arrow-right" size=16 css_class="icon-flip" %}
+            </a>
+
+            <a class="chat-peer" href="{% url 'profiles:public' person.id %}">
+                <span class="list-avatar">
+                    {% if person.avatar_url %}
+                        <img src="{{ person.avatar_url }}" alt="{{ person.display_name }}">
+                    {% else %}{{ person.display_name|first }}{% endif %}
+                </span>
+                <span class="chat-peer-text">
+                    <span class="chat-peer-name">
+                        {{ person.display_name }}
+                        {% if person.is_verified %}
+                            {% icon "patch-check-fill" size=14 css_class="tone-verified" label="Verified" %}
+                        {% endif %}
+                    </span>
+                    <span class="chat-peer-status">
+                        {% if person.is_online %}Online{% else %}Offline{% endif %}
+                    </span>
+                </span>
+            </a>
+
+            {% if is_match %}<span class="chip chip-match">Matched</span>{% endif %}
+            <a class="btn btn-ghost btn-sm" href="{% url 'reports:report_user' person.id %}"
+               title="Report this member">{% icon "flag-fill" size=14 %}</a>
+        </header>
+
+        <div class="chat-thread" data-thread>
+            {% for message in chat_messages %}
+                <div class="bubble{% if message.is_mine %} is-mine{% endif %}{% if message.is_deleted %} is-deleted{% endif %}"
+                     data-message-id="{{ message.id }}">
+                    {% if message.is_deleted %}
+                        <span class="bubble-text">This message was deleted</span>
+                    {% else %}
+                        {% if message.attachment_url %}
+                            <span class="bubble-image">
+                                <img src="{{ message.attachment_url }}" alt="Shared photo" loading="lazy">
+                            </span>
+                        {% endif %}
+                        {% if message.voice_url %}
+                            <audio controls src="{{ message.voice_url }}"></audio>
+                        {% endif %}
+                        {% if message.video_url %}
+                            <span class="bubble-video">
+                                <video controls src="{{ message.video_url }}"></video>
+                            </span>
+                        {% endif %}
+                        {% if message.document_url %}
+                            <a class="bubble-document" href="{{ message.document_url }}" target="_blank" rel="noopener">
+                                {% icon "journal-text" size=18 %}
+                                <span class="bubble-document-name">{{ message.document_name|default:"Document" }}</span>
+                            </a>
+                        {% endif %}
+                        {% if message.body %}<span class="bubble-text">{{ message.body }}</span>{% endif %}
+                        <span class="bubble-foot">
+                            <span class="bubble-time">{{ message.time_label }}</span>
+                            {% if message.is_mine %}
+                                {% if message.is_read %}
+                                    {% icon "check2-all" size=13 css_class="is-read" label="Read" %}
+                                {% else %}
+                                    {% icon "check2" size=13 label="Sent" %}
+                                {% endif %}
+                            {% endif %}
+                        </span>
+                    {% endif %}
+                </div>
+            {% empty %}
+                <div class="chat-intro">
+                    {% icon "chat-heart-fill" size=30 %}
+                    <p class="chat-intro-title">{{ intro_title }}</p>
+                    <p class="chat-intro-text">{{ intro_text }}</p>
+                </div>
+            {% endfor %}
+        </div>
+
+        <p class="typing-indicator" data-typing></p>
+
+        {% if is_active %}
+            <div class="chat-composer-wrap">
+                <div class="composer-popover" data-emoji-panel hidden></div>
+                {% if can_send_media %}
+                    <div class="composer-popover composer-attach-menu" data-attach-menu hidden>
+                        <button type="button" class="attach-menu-item" data-attach-trigger="attachment">
+                            {% icon "image" size=16 %} Photo
+                        </button>
+                        <button type="button" class="attach-menu-item" data-attach-trigger="video">
+                            {% icon "camera-fill" size=16 %} Video
+                        </button>
+                        <button type="button" class="attach-menu-item" data-attach-trigger="document">
+                            {% icon "journal-text" size=16 %} Document
+                        </button>
+                    </div>
+                {% endif %}
+                <form class="chat-composer" method="post"
+                      action="{% url 'chat:send' conversation_id %}"
+                      enctype="multipart/form-data" data-composer>
+                    {% csrf_token %}
+                    {% if can_send_media %}
+                        <button type="button" class="composer-icon-btn" data-attach-toggle
+                                title="Attach a file" aria-label="Attach a file">
+                            {% icon "paperclip" size=18 %}
+                        </button>
+                        <input type="file" name="attachment" accept="image/*" hidden data-attach="attachment">
+                        <input type="file" name="video" accept="video/*" hidden data-attach="video">
+                        <input type="file" name="document"
+                               accept=".pdf,.doc,.docx,.xls,.xlsx,.txt" hidden data-attach="document">
+                    {% endif %}
+                    <button type="button" class="composer-icon-btn" data-emoji-toggle
+                            title="Emoji" aria-label="Emoji">
+                        {% icon "emoji-smile" size=18 %}
+                    </button>
+                    <input class="form-input composer-input" type="text" name="body"
+                           autocomplete="off" placeholder="Write a message…" autofocus>
+                    <button type="submit" class="composer-send" title="Send" aria-label="Send">
+                        {% icon "send-fill" size=17 %}
+                    </button>
+                </form>
+            </div>
+        {% else %}
+            <div class="chat-closed">
+                {% icon "lock-fill" size=15 %}
+                <span>This conversation is closed. {{ closed_reason }}</span>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/chat.js' %}" defer></script>
+{% endblock %}

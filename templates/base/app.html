@@ -1,0 +1,38 @@
+{% extends "base/base.html" %}
+
+{% comment %}
+Shell for signed-in pages: sidebar navigation plus a content column.
+{% endcomment %}
+
+{% block body_class %}app-shell{% endblock %}
+
+{% block main_class %}app-main{% endblock %}
+
+{% block content %}
+<div class="app-layout">
+    {% include "components/sidebar.html" %}
+
+    {% comment %}
+    Dims the page behind the mobile drawer and closes it when tapped. Inert and
+    invisible on desktop, where the sidebar never leaves the flow.
+    {% endcomment %}
+    <div class="drawer-backdrop" data-drawer-close></div>
+
+    <div class="app-content">
+        {% block page_header %}
+            {% if page_title %}
+                <header class="page-header">
+                    <h1 class="page-title">{{ page_title }}</h1>
+                    {% if page_subtitle %}<p class="page-subtitle">{{ page_subtitle }}</p>{% endif %}
+                </header>
+            {% endif %}
+        {% endblock %}
+
+        {% block app_content %}{% endblock %}
+    </div>
+</div>
+
+{% include "components/bottom_nav.html" %}
+{% endblock %}
+
+{% block footer %}{% endblock %}

@@ -1,0 +1,16 @@
+{% extends "base/app.html" %}
+{% block title %}ID verification · {{ SITE.SITE_NAME }}{% endblock %}
+{% block app_content %}
+<div class="panel stack narrow-md">
+    <h1>Government ID</h1>
+    <p>Upload a clear photo of your national ID, passport or driving licence.</p>
+    <p class="small muted">We use it only to confirm your identity, then delete it.
+       It is never shown to other members.</p>
+
+    <form method="post" enctype="multipart/form-data" novalidate>
+        {% csrf_token %}
+        {% include "components/form.html" with form=form %}
+        <button type="submit" class="btn btn-primary btn-block">Submit for review</button>
+    </form>
+</div>
+{% endblock %}

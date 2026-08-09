@@ -1,0 +1,24 @@
+{% extends "base/app.html" %}
+{% block title %}Daily limits · {{ SITE.SITE_NAME }}{% endblock %}
+{% block app_content %}
+<div class="panel stack narrow">
+    <h1>Today's limits</h1>
+    <p class="muted">You're on the {{ plan.name }} plan.</p>
+
+    <div class="table-wrap">
+        <table class="table">
+            <thead><tr><th>Action</th><th>Used</th><th>Limit</th></tr></thead>
+            <tbody>
+                <tr><td>Likes</td><td>{{ quota.likes_used }}</td>
+                    <td>{% if quota.is_unlimited %}Unlimited{% else %}{{ quota.likes_limit }}{% endif %}</td></tr>
+                <tr><td>Super likes</td><td>{{ quota.super_likes_used }}</td>
+                    <td>{{ quota.super_likes_limit }}</td></tr>
+                <tr><td>Rewinds</td><td>{{ quota.rewinds_used }}</td>
+                    <td>{{ quota.rewinds_limit }}</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <a class="btn btn-primary" href="{% url 'subscriptions:plans' %}">Get more</a>
+</div>
+{% endblock %}

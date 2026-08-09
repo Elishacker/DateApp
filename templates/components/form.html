@@ -1,0 +1,30 @@
+{% comment %}
+Renders any form. All labelling, styling and error text comes from the form
+object built in the view — this file only outputs what it is given.
+Usage: {% include "components/form.html" with form=form %}
+{% endcomment %}
+
+{% if form.non_field_errors %}
+    <div class="form-errors">
+        {% for error in form.non_field_errors %}
+            <p class="form-error">{{ error }}</p>
+        {% endfor %}
+    </div>
+{% endif %}
+
+{% for field in form %}
+    {% if field.is_hidden %}
+        {{ field }}
+    {% else %}
+        <div class="form-group">
+            <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% if field.help_text %}
+                <p class="form-help">{{ field.help_text }}</p>
+            {% endif %}
+            {% for error in field.errors %}
+                <p class="form-error">{{ error }}</p>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endfor %}

@@ -1,0 +1,23 @@
+{% extends "base/app.html" %}
+{% block title %}Preferences · {{ SITE.SITE_NAME }}{% endblock %}
+{% block app_content %}
+<header class="page-header">
+    <h1 class="page-title">Who you're looking for</h1>
+    <p class="page-subtitle">These drive every suggestion you see.</p>
+</header>
+
+{% if not has_advanced_filters %}
+    <div class="panel mb-2">
+        <p class="mb-1">Verified-only and global search are premium filters.</p>
+        <a class="btn btn-primary btn-sm" href="{% url 'subscriptions:plans' %}">See plans</a>
+    </div>
+{% endif %}
+
+<div class="panel">
+    <form method="post" novalidate>
+        {% csrf_token %}
+        {% include "components/form.html" with form=form %}
+        <button type="submit" class="btn btn-primary">Save preferences</button>
+    </form>
+</div>
+{% endblock %}

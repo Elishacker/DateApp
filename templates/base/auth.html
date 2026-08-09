@@ -1,0 +1,24 @@
+{% extends "base/base.html" %}
+
+{% comment %}Centred single-card shell for sign-in, sign-up and recovery.{% endcomment %}
+
+{% block body_class %}auth-shell{% endblock %}
+{% block main_class %}auth-main{% endblock %}
+{% block header %}{% endblock %}
+
+{% block content %}
+<div class="auth-wrap">
+    <a class="auth-brand" href="{% url 'common:landing' %}">{{ SITE.SITE_NAME }}</a>
+
+    <div class="auth-card">
+        <h1 class="auth-title">{% block auth_title %}{% endblock %}</h1>
+        <p class="auth-subtitle">{% block auth_subtitle %}{% endblock %}</p>
+
+        {% block auth_content %}{% endblock %}
+    </div>
+
+    <p class="auth-footer">{% block auth_footer %}{% endblock %}</p>
+</div>
+{% endblock %}
+
+{% block footer %}{% endblock %}

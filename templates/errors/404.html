@@ -1,0 +1,11 @@
+{% extends "base/base.html" %}
+{% load icons %}
+{% block title %}Not found · {{ SITE.SITE_NAME }}{% endblock %}
+{% block content %}
+<div class="panel center narrow centered">
+    <div class="empty-icon">{% icon "compass-fill" size=34 %}</div>
+    <h1>Page not found</h1>
+    <p class="muted">That page doesn't exist, or it moved.</p>
+    <a class="btn btn-primary" href="{% url 'common:landing' %}">Back to home</a>
+</div>
+{% endblock %}

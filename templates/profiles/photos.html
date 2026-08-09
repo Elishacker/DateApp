@@ -1,0 +1,47 @@
+{% extends "base/app.html" %}
+{% load icons %}
+{% block title %}My photos · {{ SITE.SITE_NAME }}{% endblock %}
+{% block app_content %}
+<header class="page-header">
+    <h1 class="page-title">Photos</h1>
+    <p class="page-subtitle">Up to {{ max_photos }}. New uploads appear once reviewed.</p>
+</header>
+
+<div class="panel mb-2">
+    <form method="post" enctype="multipart/form-data" novalidate>
+        {% csrf_token %}
+        {% include "components/form.html" with form=form %}
+        <button type="submit" class="btn btn-primary">Upload</button>
+    </form>
+</div>
+
+{% if photos %}
+    <div class="grid grid-3">
+        {% for photo in photos %}
+            <div class="panel">
+                <img class="tile-photo" src="{{ photo.url }}" alt="{{ photo.caption }}">
+                <p class="small muted mt-1">{{ photo.get_moderation_status_display }}</p>
+                <div class="row mt-1">
+                    {% if not photo.is_primary %}
+                        <form method="post" action="{% url 'profiles:photo_primary' photo.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-ghost btn-sm">Make main</button>
+                        </form>
+                    {% else %}
+                        <span class="chip">Main photo</span>
+                    {% endif %}
+                    <form method="post" action="{% url 'profiles:photo_delete' photo.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-ghost btn-sm">Remove</button>
+                    </form>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="empty">
+        <div class="empty-icon">{% icon "camera-fill" size=34 %}</div>
+        <p class="empty-text">No photos yet. Add at least one to appear in Discover.</p>
+    </div>
+{% endif %}
+{% endblock %}

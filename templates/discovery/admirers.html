@@ -1,0 +1,30 @@
+{% extends "base/app.html" %}
+{% load icons %}
+{% block title %}Likes you · {{ SITE.SITE_NAME }}{% endblock %}
+{% block app_content %}
+<header class="page-header">
+    <h1 class="page-title">{{ headline }}</h1>
+    {% if breakdown %}<p class="page-subtitle">{{ breakdown }}</p>{% endif %}
+</header>
+
+{% if unlocked %}
+    {% if cards %}
+        <div class="grid grid-cards" data-feed>
+            {% for card in cards %}
+                {% include "components/profile_card.html" with card=card show_admirer_kind=True %}
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty">
+            <div class="empty-icon">{% icon "heart-fill" size=34 %}</div>
+            <p class="empty-text">No likes yet. Keep swiping — visibility grows with activity.</p>
+        </div>
+    {% endif %}
+{% else %}
+    <div class="empty">
+        <div class="empty-icon">{% icon "lock-fill" size=34 %}</div>
+        <p class="empty-text">{{ upsell }}</p>
+        <a class="btn btn-primary btn-lg" href="{% url 'subscriptions:plans' %}">See plans</a>
+    </div>
+{% endif %}
+{% endblock %}

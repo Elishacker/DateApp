@@ -1,0 +1,32 @@
+{% extends "base/app.html" %}
+{% load icons %}
+{% block title %}Devices · {{ SITE.SITE_NAME }}{% endblock %}
+{% block app_content %}
+<header class="page-header">
+    <h1 class="page-title">Signed-in devices</h1>
+    <p class="page-subtitle">Sign out anything you don't recognise.</p>
+</header>
+
+<div class="list">
+    {% for device in devices %}
+        <div class="list-item">
+            <div class="list-avatar">{% icon "person-badge-fill" size=20 %}</div>
+            <div class="list-body">
+                <p class="list-title">{{ device.name }}</p>
+                <p class="list-sub">{{ device.ip_address }} · last seen {{ device.last_seen_at }}</p>
+            </div>
+            <div class="list-side">
+                {% if device.is_trusted %}<span class="chip chip-verified">Trusted</span>{% endif %}
+                {% if device.is_revoked %}
+                    <span class="chip">Signed out</span>
+                {% else %}
+                    <form method="post" action="{% url 'accounts:device_revoke' device.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-ghost btn-sm">Sign out</button>
+                    </form>
+                {% endif %}
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

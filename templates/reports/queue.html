@@ -1,0 +1,46 @@
+{% extends "base/app.html" %}
+{% load icons %}
+{% block title %}Report queue · {{ SITE.SITE_NAME }}{% endblock %}
+{% block app_content %}
+<header class="page-header">
+    <h1 class="page-title">Report queue</h1>
+    <p class="page-subtitle">{{ stats.open }} open · {{ stats.urgent }} urgent</p>
+</header>
+
+{% if has_rows %}
+    <div class="stack">
+        {% for row in rows %}
+            <div class="panel">
+                <div class="row-between mb-1">
+                    <span class="list-title">{{ row.reported.display_name }}</span>
+                    {% if row.is_urgent %}<span class="chip tone-danger">Urgent</span>{% endif %}
+                </div>
+                <p class="small muted">
+                    {{ row.reason_label }} · reported by {{ row.reporter.display_name }}
+                    · trust {{ row.trust_score }} · {{ row.prior_reports }} prior reports
+                </p>
+                {% if row.description %}<p>{{ row.description }}</p>{% endif %}
+
+                <form method="post" action="{% url 'reports:resolve' row.report_id %}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label class="form-label" for="outcome-{{ row.report_id }}">Outcome</label>
+                        <select class="form-select" name="outcome" id="outcome-{{ row.report_id }}">
+                            {% for outcome in outcomes %}
+                                <option value="{{ outcome.value }}">{{ outcome.label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <input class="form-input mb-1" type="text" name="note" placeholder="Moderator note">
+                    <button type="submit" class="btn btn-primary btn-sm">Resolve</button>
+                </form>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="empty">
+        <div class="empty-icon">{% icon "flag-fill" size=34 %}</div>
+        <p class="empty-text">No open reports. The queue is clear.</p>
+    </div>
+{% endif %}
+{% endblock %}

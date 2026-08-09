@@ -1,0 +1,46 @@
+{% extends "base/app.html" %}
+{% block title %}Why you match · {{ SITE.SITE_NAME }}{% endblock %}
+{% block app_content %}
+<div class="panel stack">
+    <div class="row">
+        <div class="list-avatar avatar-lg">
+            {% if person.avatar_url %}
+                <img src="{{ person.avatar_url }}" alt="{{ person.display_name }}">
+            {% else %}{{ person.display_name|first }}{% endif %}
+        </div>
+        <div>
+            <h1 class="mb-0">{{ score }}% · {{ score_label }}</h1>
+            <p class="muted mb-0">with {{ person.display_name }}</p>
+        </div>
+    </div>
+
+    {% if distance_km %}<p class="muted">{{ distance_km }} km apart</p>{% endif %}
+
+    <div>
+        <h2 class="panel-title">How the score breaks down</h2>
+        {% for dimension in dimensions %}
+            <div class="mb-2">
+                <div class="row-between">
+                    <span class="list-title">{{ dimension.label }}</span>
+                    <span class="meter-value">{{ dimension.percent }}%</span>
+                </div>
+                <div class="progress">
+                    <div class="progress-bar" data-progress="{{ dimension.percent }}"></div>
+                </div>
+                <p class="small muted mb-0">{{ dimension.sentence }}</p>
+            </div>
+        {% endfor %}
+    </div>
+
+    {% if shared_count %}
+        <div>
+            <h2 class="panel-title">{{ shared_count }} shared interests</h2>
+            <ul class="chip-list">
+                {% for interest in shared_interests %}<li class="chip">{{ interest }}</li>{% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    <a class="btn btn-ghost" href="{% url 'profiles:public' person.id %}">View full profile</a>
+</div>
+{% endblock %}

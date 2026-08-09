@@ -1,0 +1,33 @@
+{% extends "base/app.html" %}
+{% load icons %}
+{% block title %}Profile viewers · {{ SITE.SITE_NAME }}{% endblock %}
+{% block app_content %}
+<header class="page-header">
+    <h1 class="page-title">Who viewed you</h1>
+    <p class="page-subtitle">{{ count }} views</p>
+</header>
+
+{% if unlocked %}
+    <div class="list">
+        {% for viewer in viewers %}
+            <a class="list-item" href="{% url 'profiles:public' viewer.id %}">
+                <div class="list-avatar">
+                    {% if viewer.avatar_url %}
+                        <img src="{{ viewer.avatar_url }}" alt="{{ viewer.display_name }}">
+                    {% else %}{{ viewer.display_name|first }}{% endif %}
+                </div>
+                <div class="list-body">
+                    <p class="list-title">{{ viewer.display_name }}</p>
+                    <p class="list-sub">{% if viewer.is_online %}Online now{% endif %}</p>
+                </div>
+            </a>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="empty">
+        <div class="empty-icon">{% icon "eye-fill" size=34 %}</div>
+        <p class="empty-text">{{ count }} people viewed your profile. Upgrade to see who.</p>
+        <a class="btn btn-primary" href="{% url 'subscriptions:plans' %}">See plans</a>
+    </div>
+{% endif %}
+{% endblock %}

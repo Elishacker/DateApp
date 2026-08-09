@@ -1,0 +1,41 @@
+{% extends "base/base.html" %}
+{% load icons %}
+{% block title %}{{ title }} · {{ SITE.SITE_NAME }}{% endblock %}
+{% block content %}
+<div class="wizard">
+    <div class="wizard-steps">
+        {% for step in steps %}
+            <div class="wizard-step{% if step.is_done %} is-done{% elif step.is_current %} is-current{% endif %}"></div>
+        {% endfor %}
+    </div>
+
+    <div class="panel stack">
+        <p class="small muted">Step {{ step_number }} of {{ total_steps }} · {{ percent_complete }}% complete</p>
+        <h1>{{ title }}</h1>
+        <p class="muted">{{ subtitle }}</p>
+
+        {% if photos %}
+            <div class="grid grid-3">
+                {% for url in photos %}
+                    <img src="{{ url }}" alt="Your photo" class="tile-photo">
+                {% endfor %}
+            </div>
+            <p class="small muted">{{ photo_count }} uploaded. New photos appear publicly once reviewed.</p>
+        {% else %}
+            <div class="empty">
+                <div class="empty-icon">{% icon "camera-fill" size=34 %}</div>
+                <p class="empty-text">Profiles with three or more photos get far more matches.</p>
+            </div>
+        {% endif %}
+
+        <a class="btn btn-ghost btn-block" href="{% url 'profiles:photos' %}">Upload photos</a>
+
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary btn-block"
+                    {% if not can_continue %}disabled{% endif %}>Continue</button>
+        </form>
+
+    </div>
+</div>
+{% endblock %}

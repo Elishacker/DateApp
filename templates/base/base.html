@@ -1,0 +1,49 @@
+{% load static %}<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    <title>{% block title %}{{ SITE.SITE_NAME }}{% endblock %}</title>
+    <meta name="description" content="{% block description %}{{ SITE.TAGLINE }}{% endblock %}">
+
+    <link rel="manifest" href="{% static 'manifest.webmanifest' %}">
+    <meta name="theme-color" content="#7c3aed">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="{{ SITE.SITE_NAME }}">
+    <link rel="icon" href="{% static 'img/favicon.svg' %}" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="{% static 'img/icons/apple-touch-icon.png' %}">
+    <link rel="stylesheet" href="{% static 'css/zynora.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="{% block body_class %}{% endblock %}" data-debug="{{ DEBUG|yesno:'true,false' }}">
+
+{% block header %}
+    {% include "components/navbar.html" %}
+{% endblock %}
+
+{% if messages %}
+    <div class="flash-stack" role="status">
+        {% for message in messages %}
+            <div class="flash flash-{{ message.tags }}">
+                <span>{{ message }}</span>
+                <button type="button" class="flash-close" data-dismiss>&times;</button>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+<main class="{% block main_class %}page{% endblock %}">
+    {% block content %}{% endblock %}
+</main>
+
+{% block footer %}
+    {% include "components/footer.html" %}
+{% endblock %}
+
+<script src="{% static 'js/zynora.js' %}" defer></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,20 @@
+{% load static %}<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>You're offline — Zynora</title>
+    <link rel="icon" href="{% static 'img/favicon.svg' %}" type="image/svg+xml">
+    <link rel="stylesheet" href="{% static 'css/zynora.css' %}">
+</head>
+<body>
+<main class="page" style="max-width: 480px; margin: 3rem auto;">
+    <div class="empty">
+        <div class="empty-icon">📡</div>
+        <h1 class="page-title">You're offline</h1>
+        <p class="empty-text">Zynora needs a connection for this page. Check your network and try again.</p>
+        <button type="button" class="btn btn-accent" onclick="location.reload()">Retry</button>
+    </div>
+</main>
+</body>
+</html>

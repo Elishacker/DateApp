@@ -1,0 +1,27 @@
+{% extends "base/app.html" %}
+{% block title %}Likes you sent · {{ SITE.SITE_NAME }}{% endblock %}
+{% block app_content %}
+<header class="page-header">
+    <h1 class="page-title">Likes you sent</h1>
+    <p class="page-subtitle">
+        {{ breakdown }}{% if breakdown %} · {% endif %}{{ matched_count }} became matches
+    </p>
+</header>
+
+<div class="list">
+    {% for row in rows %}
+        <a class="list-item" href="{% url 'profiles:public' row.user.id %}">
+            <div class="list-avatar">
+                {% if row.user.avatar_url %}
+                    <img src="{{ row.user.avatar_url }}" alt="{{ row.user.display_name }}">
+                {% else %}{{ row.user.display_name|first }}{% endif %}
+            </div>
+            <div class="list-body">
+                <p class="list-title">{{ row.user.display_name }}</p>
+                <p class="list-sub">{% if row.is_super_like %}Super like · {% endif %}{{ row.score }}% match</p>
+            </div>
+            <div class="list-side">{{ row.status_label }}</div>
+        </a>
+    {% endfor %}
+</div>
+{% endblock %}
