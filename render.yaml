@@ -6,7 +6,7 @@ services:
     dockerContext: .
     plan: free
     healthCheckPath: /health/
-    dockerCommand: sh -c "python manage.py migrate --noinput && python manage.py collectstatic --noinput && uvicorn config.asgi:application --host 0.0.0.0 --port 8000"
+    dockerCommand: sh docker/start-web.sh
     envVars:
       - key: DJANGO_SETTINGS_MODULE
         value: config.settings.production
