@@ -7,7 +7,7 @@ written before the platform moved to Bootstrap Icons still hold emoji, which the
 Recomputing from ``kind`` rather than mapping emoji-to-name is deliberate: it is
 self-healing, so re-running it after any future icon change fixes history too.
 """
-from django.db import migrations
+from django.db import migrations, models
 
 #: Mirrors KIND_RULES in apps/notifications/services.py. Duplicated here on
 #: purpose — a migration must keep working even when that module changes.
@@ -41,4 +41,13 @@ def noop(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [("notifications", "0001_initial")]
-    operations = [migrations.RunPython(to_icon_names, noop)]
+    operations = [
+        # Widen first: 0001 sized this column for a single emoji character,
+        # too narrow for the sprite names this migration is about to write.
+        migrations.AlterField(
+            model_name="notification",
+            name="icon",
+            field=models.CharField(blank=True, max_length=40),
+        ),
+        migrations.RunPython(to_icon_names, noop),
+    ]

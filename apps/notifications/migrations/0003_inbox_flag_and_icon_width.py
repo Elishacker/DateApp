@@ -39,11 +39,6 @@ class Migration(migrations.Migration):
             name='in_inbox',
             field=models.BooleanField(db_index=True, default=True, help_text="Shown in the member's notification inbox. Operational records are retained but excluded — see INBOX_KINDS."),
         ),
-        migrations.AlterField(
-            model_name='notification',
-            name='icon',
-            field=models.CharField(blank=True, max_length=40),
-        ),
         migrations.AddIndex(
             model_name='notification',
             index=models.Index(fields=['user', 'in_inbox', 'is_read', '-created_at'], name='notificatio_user_id_bd84bf_idx'),
