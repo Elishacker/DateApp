@@ -42,7 +42,9 @@ class Plan(TimeStampedModel):
 
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     currency = models.CharField(max_length=3, choices=Currency.choices, default=Currency.TZS)
-    duration_days = models.PositiveSmallIntegerField(default=30)
+    #: Not a smallint: the free plan's "forever" default (36500 days) exceeds
+    #: PostgreSQL's smallint range (32767).
+    duration_days = models.PositiveIntegerField(default=30)
     trial_days = models.PositiveSmallIntegerField(default=0)
 
     entitlements = models.JSONField(

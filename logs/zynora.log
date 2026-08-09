@@ -23246,3 +23246,134 @@ django.db.utils.OperationalError: database is locked
 [2026-08-09 16:06:35,117] INFO django.channels.server [mHTTP GET /api/v1/notifications/badges/ 200 [0.05, 127.0.0.1:39068][0m
 [2026-08-09 16:07:34,377] INFO django.channels.server [mHTTP GET /api/v1/notifications/badges/ 200 [0.06, 127.0.0.1:39068][0m
 [2026-08-09 16:08:34,420] INFO django.channels.server [mHTTP GET /api/v1/notifications/badges/ 200 [0.09, 127.0.0.1:39068][0m
+[2026-08-09 18:38:46,536] ERROR django.request Internal Server Error: /recommendations/top-picks/
+Traceback (most recent call last):
+  File "/home/r3dh4t/Projects/Zynora/venv/lib/python3.13/site-packages/django/db/models/query.py", line 950, in get_or_create
+    return self.get(**kwargs), False
+           ~~~~~~~~^^^^^^^^^^
+  File "/home/r3dh4t/Projects/Zynora/venv/lib/python3.13/site-packages/django/db/models/query.py", line 651, in get
+    raise self.model.DoesNotExist(
+        "%s matching query does not exist." % self.model._meta.object_name
+    )
+apps.subscriptions.models.Plan.DoesNotExist: Plan matching query does not exist.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/r3dh4t/Projects/Zynora/venv/lib/python3.13/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/home/r3dh4t/Projects/Zynora/venv/lib/python3.13/site-packages/psycopg/cursor.py", line 117, in execute
+    raise ex.with_traceback(None)
+psycopg.errors.NumericValueOutOfRange: smallint out of range
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/r3dh4t/Projects/Zynora/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/r3dh4t/Projects/Zynora/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/r3dh4t/Projects/Zynora/venv/lib/python3.13/site-packages/django/views/generic/base.py", line 105, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/r3dh4t/DateApp/apps/common/mixins.py", line 16, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/r3dh4t/Projects/Zynora/venv/lib/python3.13/site-packages/django/contrib/auth/mixins.py", line 73, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/r3dh4t/Projects/Zynora/venv/lib/python3.13/site-packages/django/views/generic/base.py", line 144, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/r3dh4t/Projects/Zynora/venv/lib/python3.13/site-packages/django/views/generic/base.py", line 228, in get
+    context = self.get_context_data(**kwargs)
+  File "/home/r3dh4t/DateApp/apps/recommendation/views.py", line 32, in get_context_data
+    context["is_premium"] = services.subscriptions.is_premium(user_id)
+                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/r3dh4t/DateApp/apps/subscriptions/interface.py", line 44, in is_premium
+    return SubscriptionService.current_plan(user_id).is_premium
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/r3dh4t/DateApp/apps/subscriptions/services.py", line 112, in current_plan
+    return subscription.plan if subscription else PlanService.default_plan()
+                                                  ~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/r3dh4t/DateApp/apps/subscriptions/services.py", line 32, in default_plan
+    plan, _ = Plan.objects.get_or_create(
+              ~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        code="free",
+        ^^^^^^^^^^^^
+    ...<5 lines>...
+        },
+        ^^
+    )
+    ^
+  File "/home/r3dh4t/Projects/Zynora/venv/lib/python3.13/site-packages/django/db/models/manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/r3dh4t/Projects/Zynora/venv/lib/python3.13/site-packages/django/db/models/query.py", line 957, in get_or_create
+    return self.create(**params), True
+           ~~~~~~~~~~~^^^^^^^^^^
+  File "/home/r3dh4t/Projects/Zynora/venv/lib/python3.13/site-packages/django/db/models/query.py", line 681, in create
+    obj.save(force_insert=True, using=self.db)
+    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/r3dh4t/Projects/Zynora/venv/lib/python3.13/site-packages/django/db/models/base.py", line 892, in save
+    self.save_base(
+    ~~~~~~~~~~~~~~^
+        using=using,
+        ^^^^^^^^^^^^
+    ...<2 lines>...
+        update_fields=update_fields,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/r3dh4t/Projects/Zynora/venv/lib/python3.13/site-packages/django/db/models/base.py", line 998, in save_base
+    updated = self._save_table(
+        raw,
+    ...<4 lines>...
+        update_fields,
+    )
+  File "/home/r3dh4t/Projects/Zynora/venv/lib/python3.13/site-packages/django/db/models/base.py", line 1161, in _save_table
+    results = self._do_insert(
+        cls._base_manager, using, fields, returning_fields, raw
+    )
+  File "/home/r3dh4t/Projects/Zynora/venv/lib/python3.13/site-packages/django/db/models/base.py", line 1202, in _do_insert
+    return manager._insert(
+           ~~~~~~~~~~~~~~~^
+        [self],
+        ^^^^^^^
+    ...<3 lines>...
+        raw=raw,
+        ^^^^^^^^
+    )
+    ^
+  File "/home/r3dh4t/Projects/Zynora/venv/lib/python3.13/site-packages/django/db/models/manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/r3dh4t/Projects/Zynora/venv/lib/python3.13/site-packages/django/db/models/query.py", line 1852, in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "/home/r3dh4t/Projects/Zynora/venv/lib/python3.13/site-packages/django/db/models/sql/compiler.py", line 1836, in execute_sql
+    cursor.execute(sql, params)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/home/r3dh4t/Projects/Zynora/venv/lib/python3.13/site-packages/django/db/backends/utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/home/r3dh4t/Projects/Zynora/venv/lib/python3.13/site-packages/django/db/backends/utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        sql, params, many=False, executor=self._execute
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/r3dh4t/Projects/Zynora/venv/lib/python3.13/site-packages/django/db/backends/utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "/home/r3dh4t/Projects/Zynora/venv/lib/python3.13/site-packages/django/db/backends/utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/r3dh4t/Projects/Zynora/venv/lib/python3.13/site-packages/django/db/utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/home/r3dh4t/Projects/Zynora/venv/lib/python3.13/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/home/r3dh4t/Projects/Zynora/venv/lib/python3.13/site-packages/psycopg/cursor.py", line 117, in execute
+    raise ex.with_traceback(None)
+django.db.utils.DataError: smallint out of range
