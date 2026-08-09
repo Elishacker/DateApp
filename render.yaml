@@ -17,7 +17,7 @@ services:
       - key: ALLOWED_HOSTS
         value: .onrender.com
       - key: CSRF_TRUSTED_ORIGINS
-        value: https://dateapp.onrender.com
+        value: https://*.onrender.com
       - key: DB_ENGINE
         value: postgres
       - key: DB_NAME
