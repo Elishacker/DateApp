@@ -48,8 +48,8 @@ services:
     plan: starter
     healthCheckPath: /health/
     preDeployCommand: python manage.py migrate --noinput && python manage.py collectstatic --noinput
-    envVarGroups:
-      - dateapp-shared
+    envVars:
+      - fromGroup: dateapp-shared
 
   - type: worker
     name: dateapp-celery-worker
@@ -58,8 +58,8 @@ services:
     dockerContext: .
     dockerCommand: celery -A config worker -l info --concurrency=2
     plan: starter
-    envVarGroups:
-      - dateapp-shared
+    envVars:
+      - fromGroup: dateapp-shared
 
   - type: worker
     name: dateapp-celery-beat
@@ -68,8 +68,8 @@ services:
     dockerContext: .
     dockerCommand: celery -A config beat -l info
     plan: starter
-    envVarGroups:
-      - dateapp-shared
+    envVars:
+      - fromGroup: dateapp-shared
 
   - type: keyvalue
     name: dateapp-redis
