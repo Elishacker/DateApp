@@ -13,6 +13,18 @@ envVarGroups:
         value: https://dateapp.onrender.com
       - key: DB_ENGINE
         value: postgres
+
+services:
+  - type: web
+    name: dateapp
+    runtime: docker
+    dockerfilePath: ./docker/Dockerfile
+    dockerContext: .
+    plan: starter
+    healthCheckPath: /health/
+    preDeployCommand: python manage.py migrate --noinput && python manage.py collectstatic --noinput
+    envVars:
+      - fromGroup: dateapp-shared
       - key: DB_NAME
         fromDatabase:
           name: dateapp-db
@@ -39,18 +51,6 @@ envVarGroups:
           name: dateapp-redis
           property: connectionString
 
-services:
-  - type: web
-    name: dateapp
-    runtime: docker
-    dockerfilePath: ./docker/Dockerfile
-    dockerContext: .
-    plan: starter
-    healthCheckPath: /health/
-    preDeployCommand: python manage.py migrate --noinput && python manage.py collectstatic --noinput
-    envVars:
-      - fromGroup: dateapp-shared
-
   - type: worker
     name: dateapp-celery-worker
     runtime: docker
@@ -60,6 +60,31 @@ services:
     plan: starter
     envVars:
       - fromGroup: dateapp-shared
+      - key: DB_NAME
+        fromDatabase:
+          name: dateapp-db
+          property: database
+      - key: DB_USER
+        fromDatabase:
+          name: dateapp-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: dateapp-db
+          property: password
+      - key: DB_HOST
+        fromDatabase:
+          name: dateapp-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: dateapp-db
+          property: port
+      - key: REDIS_URL
+        fromService:
+          type: keyvalue
+          name: dateapp-redis
+          property: connectionString
 
   - type: worker
     name: dateapp-celery-beat
@@ -70,11 +95,37 @@ services:
     plan: starter
     envVars:
       - fromGroup: dateapp-shared
+      - key: DB_NAME
+        fromDatabase:
+          name: dateapp-db
+          property: database
+      - key: DB_USER
+        fromDatabase:
+          name: dateapp-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: dateapp-db
+          property: password
+      - key: DB_HOST
+        fromDatabase:
+          name: dateapp-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: dateapp-db
+          property: port
+      - key: REDIS_URL
+        fromService:
+          type: keyvalue
+          name: dateapp-redis
+          property: connectionString
 
   - type: keyvalue
     name: dateapp-redis
     plan: free
     maxmemoryPolicy: allkeys-lru
+    ipAllowList: []
 
 databases:
   - name: dateapp-db
