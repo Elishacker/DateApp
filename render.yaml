@@ -1,5 +1,12 @@
-envVarGroups:
-  - name: dateapp-shared
+services:
+  - type: web
+    name: dateapp
+    runtime: docker
+    dockerfilePath: ./docker/Dockerfile
+    dockerContext: .
+    plan: free
+    healthCheckPath: /health/
+    dockerCommand: sh -c "python manage.py migrate --noinput && python manage.py collectstatic --noinput && uvicorn config.asgi:application --host 0.0.0.0 --port 8000"
     envVars:
       - key: DJANGO_SETTINGS_MODULE
         value: config.settings.production
@@ -13,18 +20,6 @@ envVarGroups:
         value: https://dateapp.onrender.com
       - key: DB_ENGINE
         value: postgres
-
-services:
-  - type: web
-    name: dateapp
-    runtime: docker
-    dockerfilePath: ./docker/Dockerfile
-    dockerContext: .
-    plan: starter
-    healthCheckPath: /health/
-    preDeployCommand: python manage.py migrate --noinput && python manage.py collectstatic --noinput
-    envVars:
-      - fromGroup: dateapp-shared
       - key: DB_NAME
         fromDatabase:
           name: dateapp-db
@@ -45,87 +40,6 @@ services:
         fromDatabase:
           name: dateapp-db
           property: port
-      - key: REDIS_URL
-        fromService:
-          type: keyvalue
-          name: dateapp-redis
-          property: connectionString
-
-  - type: worker
-    name: dateapp-celery-worker
-    runtime: docker
-    dockerfilePath: ./docker/Dockerfile
-    dockerContext: .
-    dockerCommand: celery -A config worker -l info --concurrency=2
-    plan: starter
-    envVars:
-      - fromGroup: dateapp-shared
-      - key: DB_NAME
-        fromDatabase:
-          name: dateapp-db
-          property: database
-      - key: DB_USER
-        fromDatabase:
-          name: dateapp-db
-          property: user
-      - key: DB_PASSWORD
-        fromDatabase:
-          name: dateapp-db
-          property: password
-      - key: DB_HOST
-        fromDatabase:
-          name: dateapp-db
-          property: host
-      - key: DB_PORT
-        fromDatabase:
-          name: dateapp-db
-          property: port
-      - key: REDIS_URL
-        fromService:
-          type: keyvalue
-          name: dateapp-redis
-          property: connectionString
-
-  - type: worker
-    name: dateapp-celery-beat
-    runtime: docker
-    dockerfilePath: ./docker/Dockerfile
-    dockerContext: .
-    dockerCommand: celery -A config beat -l info
-    plan: starter
-    envVars:
-      - fromGroup: dateapp-shared
-      - key: DB_NAME
-        fromDatabase:
-          name: dateapp-db
-          property: database
-      - key: DB_USER
-        fromDatabase:
-          name: dateapp-db
-          property: user
-      - key: DB_PASSWORD
-        fromDatabase:
-          name: dateapp-db
-          property: password
-      - key: DB_HOST
-        fromDatabase:
-          name: dateapp-db
-          property: host
-      - key: DB_PORT
-        fromDatabase:
-          name: dateapp-db
-          property: port
-      - key: REDIS_URL
-        fromService:
-          type: keyvalue
-          name: dateapp-redis
-          property: connectionString
-
-  - type: keyvalue
-    name: dateapp-redis
-    plan: free
-    maxmemoryPolicy: allkeys-lru
-    ipAllowList: []
 
 databases:
   - name: dateapp-db
